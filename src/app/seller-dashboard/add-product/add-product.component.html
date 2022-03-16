@@ -1,0 +1,266 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="row">
+      <div class="col-md-6">
+        <h2>Add Product</h2>
+      </div>
+
+      <div class="col-md-3">
+        <button type="button" class="btn btn-secondary ivys-btn-icon-left">
+          <span><i class="apicon-productListing"></i></span>
+          Save Draft
+        </button>
+      </div>
+      <div class="col-md-3">        
+        <button type="button" class="btn btn-primary ivys-btn-icon-left">
+          <span><i class="apicon-productListing"></i></span>
+          Add Products
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="form-section">
+      <div class="section-title"><span>Product Basics</span></div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Product Name</label>
+            <input type="text" [(ngModel)]="product.product_name" class="form-control" name="productName">
+          </div>          
+        </div>
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Base Price (Starting Price)</label>
+            <input type="text" [(ngModel)]="product.product_price" class="form-control" name="basePrice">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Min Order QTY</label>
+            <input type="text" [(ngModel)]="product.min_order_qty" class="form-control" name="minOrderQty">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group ivys-input-style">
+            <label>Product Summary</label>
+            <ckeditor [editor]="Editor" class="product-desc" [config]="{ toolbar: [] }" data="" [(ngModel)]="product.product_desc"></ckeditor>
+          </div>          
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Product Unit</label>
+            <select class="form-control" [(ngModel)]="product.product_unit" name="productUnit">
+              <option value="">Select Unit</option>
+              <option [value]="unit" *ngFor="let unit of unitList">{{unit}}</option>
+            </select>
+          </div>          
+        </div>
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Product Location</label>
+            <select class="form-control" [(ngModel)]="product.product_country" name="productLocation">
+              <option value="">Select Country</option>
+              <option [value]="country.code" *ngFor="let country of countryList">{{country.name}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="form-group ivys-input-style">
+            <label>Shipping Method</label>
+            <select class="form-control" [(ngModel)]="product.shipping_method" name="shippingMethod">
+              <option value="">Select</option>
+              <option value="Air freight">Air freight</option>
+              <option value="Sea Freight">Sea Freight</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <div class="section-title"><span>Product Images</span></div>
+
+      <div class="row">
+       <div class="col-md-6">
+         <div class="product-img-uploader">
+          <ngx-dropzone (change)="onSelect($event)">
+              <ngx-dropzone-label>
+                Drop images here <br> 
+                or <span>Select Files</span> <br><br>
+                Recommonded size 800x800 px <br>
+                JPG, GIF or PNG format
+              </ngx-dropzone-label>
+          </ngx-dropzone>
+         </div>        
+       </div>
+       <div class="col-md-6">
+         <div class="product-img-upload-list">
+           <div class="uploaded-item" *ngFor="let f of files">
+             <img [src]="getImg(f)"/>
+             <h5>{{ f.name }} ({{ f.type }})</h5>
+             <div class="uploaded-item-action">
+               <button class="btn" type="button" (click)="onRemove(f)">
+                <i class="far fa-trash-alt"></i>
+               </button>
+             </div>
+           </div>
+         </div>
+       </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-section">
+          <div class="section-title"><span>Product Categories</span></div>
+    
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group ivys-input-style">
+                <label>Product Category</label>
+                <select class="form-control" name="productCategory" (change)="getSubCats($event)" [(ngModel)]="product.SubProductCategories_ProductCategories_product_cat_id">
+                  <option value="">Selecte Category</option>
+                  <option [value]="productCat.product_cat_id" *ngFor="let productCat of productCategories">{{productCat.product_cat_name}}</option>
+                </select>
+              </div>          
+            </div>
+            <div class="col-md-6">
+              <div class="form-group ivys-input-style">
+                <label>Product Sub Category</label>
+                <select class="form-control" [(ngModel)]="product.SubProductCategories_sub_prod_cat_id" name="productSubCategory" (change)="getSpecifications($event)">
+                  <option value="">Select Sub Category</option>
+                  <option [value]="subCat.sub_prod_cat_id" *ngFor="let subCat of productSubCats">{{subCat.sub_prod_cat_name}}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="form-section">
+          <div class="section-title"><span>Product Tags</span></div>
+    
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group ivys-input-style">
+                <label>Product Tags</label>
+                <input type="text" class="form-control" name="productTags">
+              </div>          
+            </div>
+            <div class="col-md-6">
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-section">
+          <div class="section-title"><span>Product Specifications</span></div>
+          
+          <div class="product-specifications-holder" *ngIf="productSpecifications">
+            <div class="product-specifications-item" *ngFor="let ps of productSpecifications">
+              <div class="input-group prepend">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{ps.cat_spec_attr_metas}}</span>
+                </div>
+                <input type="text" [(ngModel)]="ps.value" name="specVal" class="form-control">
+              </div>
+            </div>           
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-title"><span>Product Variants</span></div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="product-variants-holder">
+            <div class="pv-tree">
+              <div class="pvt-item" *ngFor="let variation of productVariations; let vi = index">
+                <div class="pvt-item-name">
+                  <input type="text" placeholder="Variation Name" [(ngModel)]="variation.product_variant_type" name="variationTypeName"/>
+                  <button type="button" class="btn" (click)="removeVarition(productVariations, vi)">
+                    <i class="far fa-trash-alt"></i>
+                  </button>
+                </div>
+
+                <div class="pvt-item-variants">
+                  <div class="pvtiv-item-holder" *ngFor="let variationData of variation.variationData; let i = index">
+                    <div class="pvtivih-name">
+                      <input type="text" placeholder="Variation" [(ngModel)]="variationData.product_variant_data_name" name="variationDataName"/>
+                    </div>
+                    <div class="pvtivih-base-price">
+                      <input type="text" placeholder="Base Price" [(ngModel)]="variationData.product_variant_data_price" name="variationDataPrice"/>
+                    </div>
+                    <div class="pvtivih-actions">
+                      <button type="button" class="btn" (click)="removeProductVariantData(variation.variationData, i)" *ngIf="variation.variationData.length > 1">
+                        <i class="far fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </div>  
+                  
+                  <div class="add-new-variant-data-btn" (click)="addProductVariantData(variation)">
+                    Add New Item
+                  </div>
+                </div>
+              </div>            
+            </div>
+  
+            <div class="add-new-variant-btn" (click)="addVariant()">
+              Add New Variation
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-title"><span>Product Page Tabs</span></div>
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="input-group input-group-sm append mb-3">
+                <input type="text" class="form-control form-control-sm" placeholder="Tab Name" [(ngModel)]="customTabName">
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-secondary" (click)="addNewTab()" [disabled]="!customTabName">Add New Tab</button>
+                </div>
+              </div>              
+            </div>
+          </div>
+  
+          <tabset>
+            <tab heading="Product Description">
+              <ckeditor [editor]="Editor" data="" class="tab-editor" [(ngModel)]="product.product_spec_desc"></ckeditor>
+            </tab>
+            <tab 
+            [heading]="tabs.product_cus_tab_name"
+            [removable]="tabs.removable"
+            (removed)="removeTabHandler(tabs)"
+            *ngFor="let tabs of customTabs">
+              <ckeditor [editor]="Editor" data="" class="tab-editor" [(ngModel)]="tabs.product_cus_tab_desc"></ckeditor>
+            </tab>
+          </tabset>
+        </div>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-primary" (click)="addProduct()">Add</button>
+  </div>
+</div>

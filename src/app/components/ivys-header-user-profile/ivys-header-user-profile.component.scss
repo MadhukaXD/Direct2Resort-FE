@@ -1,0 +1,28 @@
+.user-pic-name {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    img {
+        border-radius: 50%;
+        width: 34px;
+        height: 34px;
+        margin-left: 26px;
+    }
+    
+    h6 {
+        margin: 0;
+        font-size: 12px;
+        margin-left: 8px;
+        font-weight: 400;
+    }
+}
+
+
+:host ::ng-deep {
+    .user-profile-drop {
+        .popover-body {
+            padding: 0 !important;
+        }
+    }
+}

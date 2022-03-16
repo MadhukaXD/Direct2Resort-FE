@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h4 class="modal-title pull-left">{{title}}</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <form #f="ngForm" (ngSubmit)="sendRfq()" novalidate>
+    <div class="form-group ivys-input-style">
+      <label>Freight Method</label>
+      <select class="form-control" [(ngModel)]="quoteItem.freightMethod" name="freightMethod">
+        <option value="">Select Freight Method</option>
+        <option value="Air Freight">Air Freight</option>
+        <option value="Sea Freight">Sea Freight</option>
+      </select>
+    </div>
+
+    <div class="form-group ivys-input-style">
+      <label>Variants</label>
+      <select class="form-control" [(ngModel)]="quoteItem.selected_product_variants_id_list" name="variants">
+        <option value="">Select Variant</option>
+        <option [value]="variant.product_variant_id" *ngFor="let variant of product.variants">{{variant.product_variant_data_name}}</option>
+      </select>
+    </div>
+
+    <div class="form-group ivys-input-style">
+      <label>Quantity</label>
+      <input class="form-control" [(ngModel)]="quoteItem.quantity" name="quantity"/>
+    </div>
+
+    <div class="form-group ivys-input-style">
+      <label>Message</label>
+      <input class="form-control" [(ngModel)]="quoteItem.buyer_msg" name="buyer_msg"/>
+    </div>
+
+    
+  </form>
+  <button type="button" class="btn btn-primary" (click)="sendRfq()">Send RFQ</button>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="bsModalRef.hide()">{{closeBtnName}}</button>
+</div>

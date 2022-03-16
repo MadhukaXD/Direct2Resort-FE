@@ -1,0 +1,27 @@
+.page-holder {
+    .page-header {
+        h2 {
+            color: #3a5a68;
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .btn {
+            color: #707a80;
+            font-size: 22px;
+        }
+    } 
+    
+    .page-actions {
+        margin-top: 20px;
+        
+        .ivys-btn-icon-left {
+            width: 100%;
+        }
+    }
+
+    .page-content {
+        margin-top: 30px;
+    }
+}

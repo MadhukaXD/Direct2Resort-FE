@@ -1,0 +1,13 @@
+<app-ivys-header></app-ivys-header>
+<div class="seller-dashboard-container">
+  <div class="left-sidebar closed">
+    <div class="sidebar-toggle-handle" (click)="menuToggle($event);">
+      <i class="apicon-arrow-right"></i>
+    </div>
+    <app-buyer-dashboard-sidebar></app-buyer-dashboard-sidebar>
+  </div>
+  
+  <div class="dashboard-body">
+    <router-outlet></router-outlet>
+  </div>
+</div>

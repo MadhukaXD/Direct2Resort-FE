@@ -1,0 +1,38 @@
+.single-product-info {
+    height: calc(100vh - 260px);
+
+    .sp-img-gallery {
+        width: 390px;
+        height: 100%;
+       
+    }
+}
+
+:host ::ng-deep {
+    .carousel {
+        width: 100%;
+        height: calc(100% - 80px);
+        
+        .slick-list,.slick-track {
+            height: 100%;
+        }
+    
+        .slide {
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            border-radius: 10px;
+        }
+    }
+    
+    .carousel-nav {
+        .slide {
+            height: 60px;
+            background-size: cover;
+            margin: 10px 10px;
+            border-radius: 10px;
+            background-position: center center;
+        }
+    }
+}

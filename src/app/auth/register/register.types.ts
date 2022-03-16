@@ -1,0 +1,16 @@
+export interface RegisterData {
+    company_name: string;
+    company_email: string;
+    company_website: string;
+    company_street_address: string;
+    company_state: string;
+    company_zip_code: string;
+    company_city: string;
+    company_country: string;
+    company_tp: string;
+
+    gen_p_full_name: string;
+    gen_p_email: string;
+    password: string;
+    UserCategory_user_category_id: string;
+}

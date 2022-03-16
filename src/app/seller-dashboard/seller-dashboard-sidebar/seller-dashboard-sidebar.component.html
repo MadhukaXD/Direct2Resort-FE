@@ -1,0 +1,95 @@
+<ul class="sidebar-nav">
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-dashboard"></i>
+      </div>
+      Dashboard
+    </div>
+  </li>
+
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-orderHistory"></i>
+      </div>
+      Order History
+    </div>
+  </li>
+
+  <li (click)="toggleMenu($event)">
+    <div class="nav-item has-sub-menu">
+      <div class="nav-icon">        
+        <i class="apicon-products"></i>
+      </div>
+      Products
+      <div class="sub-menu-toggle">
+        <i class="apicon-arrow-down"></i>
+      </div>
+    </div>
+
+    <ul class="sub-nav">
+      <li routerLink="/seller/product-listing">
+        <div class="nav-item active">
+          <div class="nav-icon">        
+            <i class="apicon-productListing"></i>
+          </div>
+          Product Listing
+        </div>
+      </li>
+      <li routerLink="/seller/add-product">
+        <div class="nav-item">
+          <div class="nav-icon">        
+            <i class="apicon-productListing"></i>
+          </div>
+          Add Product
+        </div>
+      </li>
+    </ul>
+  </li>
+
+  <li routerLink="/seller/manage-quotes">
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-manageRfq"></i>
+      </div>
+      Manage RFQ
+    </div>
+  </li>
+
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-messages"></i>
+      </div>
+      Messages
+    </div>
+  </li>
+
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-reviewsAndFeedbacks"></i>
+      </div>
+      Reviews & Feedbacks
+    </div>
+  </li>
+
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-statistics"></i>
+      </div>
+      Statistics
+    </div>
+  </li>
+
+  <li>
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <i class="apicon-settings"></i>
+      </div>
+      Settings
+    </div>
+  </li>
+</ul>

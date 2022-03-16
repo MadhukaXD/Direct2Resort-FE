@@ -1,0 +1,157 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Manage RFQ > 
+            <span>{{quoteInfo.quote_id}} </span>
+            <span class="badge" [ngClass]="{'badge-warning':quoteInfo.final_client_aproval === 'Pending', 'badge-success':quoteInfo.final_client_aproval === 'Approved', 'badge-danger':quoteInfo.final_client_aproval === 'Rejected'}">
+              {{quoteInfo.final_client_aproval}}
+            </span>
+          </h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          <button class="btn" type="button">
+            <i class="apicon-settings"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item">
+                <small>Quotation ID</small>
+                <h2>{{quoteInfo.quote_id}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Created Date</small>
+                <h2>{{quoteInfo.created_date | date: 'M/d/yy'}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Lsat Update On</small>
+                <h2>{{quoteInfo.last_updated_date | date: 'M/d/yy'}}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Your Quote Information</h4>
+          <button class="qmas-btn">Download as PDF</button>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item">
+
+            <table>
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td>QTY</td>
+              </thead>
+              <tbody>
+                <td>
+                  <div class="qpi-img" [ngStyle]="{'background-image': 'url('+imgUploadPath+'/'+quoteProduct.product_single_img+')'}">
+                  </div>
+                </td>
+                <td>
+                  <h5 class="qpi-name">{{quoteProduct.product_name}}</h5>
+                </td>
+                <td>
+                  <h5 class="qpi-qty">
+                    {{quoteProduct.quantity}}
+                  </h5>
+                </td>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="qmas-footer">
+          <div class="form-group ivys-input-style">
+            <label>Comment</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="buyerMsg.buyer_msg" name="buyerMsg"></textarea>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="form-group form-check square-checkbox">
+              <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
+              <label class="form-check-label" for="exampleCheck1">I agree to the <a href="#">termns and conditions</a></label>
+            </div>
+
+            <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || buyerMsg.buyer_msg === ''">Send Message</button>
+          </div>
+        </div>
+      </div>
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote History</h4>
+          <button class="qmas-btn">Download as PDF</button>
+        </div>
+        <div class="qmas-msg-list-holder">
+          <div *ngFor="let qmsg of quoteInstance">
+            <div class="qmas-msg-item my-msg" *ngIf="qmsg.buyer_msg !== null">
+              <div class="qmas-msg-body">
+                <h6 class="msg-date-time">{{qmsg.buyer_msg_time | date: 'medium'}} by You</h6>
+                <h5>Comment</h5>
+                <p>{{qmsg.buyer_msg}}</p>
+              </div>
+            </div>
+  
+            <div class="qmas-msg-item client-msg" *ngIf="qmsg.seller_msg !== null">
+              <div class="qmas-msg-body">
+                <h6 class="msg-date-time">{{qmsg.seller_msg_time | date: 'medium'}} by Seller</h6>
+                <h4>Quote</h4>
+                <div class="seller-quote-template">
+                  <table>
+                    <thead>
+                      <td>Item</td>
+                      <td>QTY</td>
+                      <td>Unit Price($)</td>
+                      <td>Amount</td>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <div>{{quoteProduct.product_name}}</div>
+                        </td>
+                        <td>{{quoteProduct.quantity}}</td>
+                        <td>{{qmsg.seller_unit_price | currency}}</td>
+                        <td>{{qmsg.seller_price | currency}}</td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <td>Total</td>
+                      <td></td>
+                      <td></td>
+                      <td>{{qmsg.seller_price | currency}}</td>
+                    </tfoot>
+                  </table>
+                </div>
+
+                <p>
+                  10% Duty (Estimated)
+                  <small>*Duty, Best Shipping Rates (BSR) & any other related cost will be charged at actual cost with the final invoice.  </small>
+                </p>
+                <br>
+                <h5>Comment</h5>
+                <p>{{qmsg.seller_msg}}</p>
+                <div class="qmas-msg-footer">
+                  <button type="button" class="btn">Approve Quote</button>
+                </div>              
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

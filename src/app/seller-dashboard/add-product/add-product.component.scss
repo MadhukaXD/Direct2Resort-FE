@@ -1,0 +1,284 @@
+.page-holder {
+    .page-header {
+        h2 {
+            color: #3a5a68;
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .ivys-btn-icon-left {
+            width: 100%;
+        }
+    } 
+
+    .page-content {
+        margin-top: 30px;
+
+        .form-section {
+            margin-bottom: 58px;
+
+            .section-title {
+                color: #3a5a68;
+                font-weight: bold;
+                font-size: 16px;
+                position: relative;
+                margin-bottom: 30px;
+
+                span {
+                    background-color: #ffffff;
+                    padding: 0 10px 0 0;
+                }
+
+                &::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 13px;
+                    width: 100%;
+                    height: 1px;
+                    background-color: #d6d6d6;
+                    z-index: -1;
+                }
+            }
+
+            .product-variants-holder {
+                .add-new-variant-btn {
+                    width: 292px;
+                    height: 42px;
+                    border-radius: 10px;
+                    border: dashed 1px #d8d8d8;
+                    color: #778990;
+                    font-size: 12px;
+                    padding: 12px 20px;
+                    font-weight: 500;
+                    cursor: pointer;
+                }
+
+                .pv-tree-titles {
+                    display: flex;
+                    flex-direction: row; 
+                    color: #90a0a7;
+                    font-size: 12px;
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    margin-bottom: 30px;
+
+                    .variation-title {
+                        width: 310px;                        
+                    }
+                    .variation-thumbnail {
+                        width: 110px;
+                    }
+                    .variation-desc {
+                        width: 244px;
+                    }
+                    .variation-base-price {
+                        width: 130px;
+                    }
+                }
+
+                .pv-tree {
+                    .pvt-item {
+                        .pvt-item-name {
+                            width: 290px;
+                            height: 42px;
+                            padding: 6px 20px;
+                            border-radius: 10px;
+                            background-color: #e8ecf2;
+                            margin-bottom: 20px;
+                            position: relative;
+                            
+                            input {
+                                height: 30px !important;
+                                border-radius: 0 !important;
+                                border: none !important;
+                                background-color: #e8ecf2;
+                                outline: none;
+                                font-size: 14px;
+                            }
+
+                            button.btn {
+                                position: absolute;
+                                right: 0;
+                                top: 0;
+                                padding: 8px 14px;
+                                height: auto;
+                            }
+                        }
+
+                        .pvt-item-variants {
+                            padding: 0 0 0 50px;
+
+                            .pvtiv-item-holder {
+                                display: flex;
+                                flex-direction: row;
+                                margin-bottom: 15px;
+                                &:last-child {
+                                    margin-bottom: 30px;
+                                }
+                                >div {
+                                    margin-right: 30px;
+                                }
+                                
+                                input {
+                                    height: 32px !important;
+                                    border-radius: 8px !important;
+                                    border: solid 1px #bec8cc !important;
+                                    padding: 0px 12px;
+                                    font-size: 12px;
+                                    outline: none;
+                                }
+                                .pvtivih-name {
+                                    width: 238px;
+                                    input {
+                                        width: 100% !important;
+                                    }
+                                }
+                                .pvtivih-img {
+                                    background-color: #e8ecf2;
+                                    width: 32px;
+                                    height: 32px;
+                                    border-radius: 4px;
+                                }
+                                .pvtivih-description {
+                                    width: 244px;
+                                    input {
+                                        width: 100% !important;
+                                    }
+                                }
+                                .pvtivih-base-price {
+                                    width: 130px;
+                                    input {
+                                        width: 100% !important;
+                                    }
+                                }
+
+                                .pvtivih-actions {
+                                    button.btn {
+                                        padding: 4px 10px;
+                                        height: auto;
+                                    }                                    
+                                }
+                            }
+
+                            .add-new-variant-data-btn {
+                                width: 238px;
+                                height: 37px;
+                                border-radius: 10px;
+                                border: dashed 1px #d8d8d8;
+                                color: #778990;
+                                font-size: 12px;
+                                padding: 9px 18px;
+                                font-weight: 500;
+                                cursor: pointer;
+                                margin-bottom: 30px;
+                            }
+                        } 
+                    }
+                }
+            }
+
+            .product-specifications-holder {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+
+                .product-specifications-item {
+                    width: 250px;
+                    margin: 0 15px 15px 0;
+
+                    .input-group {
+                        .input-group-prepend {
+                            .input-group-text {
+                                height: 32px;
+                                font-size: 12px;
+                            }
+                        }
+                        input {
+                            height: 32px !important;
+                            font-size: 12px;
+                        }
+                    }
+                }                                
+            }
+        }
+    }  
+
+    .product-img-upload-list {
+        .uploaded-item {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            img {
+                width: 42px;
+                height: 42px;
+                border-radius: 10px;
+                overflow: hidden;
+                margin-right: 18px;
+            }
+
+            h5 {
+                width: 200px;
+                margin: 0;
+                padding: 8px 10px;
+                border: 1px solid #e8ecf2;
+                border-radius: 8px;
+                font-size: 12px;
+                color: #85979e;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            button.btn {
+                padding: 4px 10px;
+                height: auto;
+                outline: none !important;
+                border: none;
+                margin-left: 20px;
+            }
+        }
+    }
+}
+
+:host ::ng-deep ngx-dropzone {
+    height: 212px;
+    border: dashed 1px #d7d8da !important;
+    background-color: #ffffff !important;
+    
+    ngx-dropzone-label {
+        color: #85979e;
+        font-size: 12px;
+        
+        span {
+            color: #325bff;
+            font-weight: 500;
+        }
+    }
+}
+
+:host ::ng-deep .product-desc {
+    .ck-editor {
+        .ck-editor__editable {
+            height: 180px;
+            border-radius: 10px;
+        }        
+    }
+}
+
+:host ::ng-deep .tab-editor {
+    .ck-editor {
+        .ck-toolbar_grouping {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .ck-editor__editable {
+            height: 180px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }        
+    }
+}
+

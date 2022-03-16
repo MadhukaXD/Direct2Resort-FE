@@ -1,0 +1,11 @@
+<div class="user-pic-name">
+    <img src="assets/images/user_avatar.jpg" [popover]="userDrop" placement="bottom" [outsideClick]="true" containerClass="user-profile-drop"/>
+    <h6>Hi, {{loggedInUserData.firstName}}</h6>
+</div>
+<ng-template #userDrop>
+    <div class="list-group">
+        <button type="button" class="list-group-item list-group-item-action" (click)="goToUserAccount()">My Account</button>
+        <button type="button" class="list-group-item list-group-item-action">Settings</button>
+        <button type="button" class="list-group-item list-group-item-action" (click)="logout()">Logout</button>
+    </div>
+</ng-template>

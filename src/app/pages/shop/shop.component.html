@@ -1,0 +1,7 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-3" *ngFor="let product of productList">      
+      <app-ivys-product-card [productName]="product.product_name" [permalink]="product.product_url" [productImg]="product.product_imgs"></app-ivys-product-card>
+    </div>
+  </div>
+</div>

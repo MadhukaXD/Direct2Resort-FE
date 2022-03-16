@@ -1,0 +1,25 @@
+@import 'src/assets/styles/variables';
+
+.navbar {
+  background-color: $headerBgColor;
+  height: 78px;
+  box-shadow: 0 0 7.5px 0 rgba(34, 60, 71, 0.1);
+
+  a {
+    color: $headerFontColor;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  .header-action-user-profile {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .navbar-brand {
+    img {
+      width: 130px;
+    }
+  }
+}

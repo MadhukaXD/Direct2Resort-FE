@@ -1,0 +1,27 @@
+<div class="product-card-outer">
+  <div class="pco-img" [ngStyle]="{'background-image': 'url('+productSingleImg+')'}">
+    <ul class="card-actions">
+      <li>
+        <img src="assets/images/icons/compare.svg"/>
+      </li>
+      <li>
+        <img src="assets/images/icons/heart.svg"/>
+      </li>      
+    </ul>
+    
+    <div class="star-rating">
+      <img src="assets/images/icons/star.svg"/>
+      4.1
+    </div>
+  </div>
+
+  <div class="pco-content">
+    <h3>{{productName}}</h3>
+    <div class="min-order">
+      Min order: 1000 sets
+      <div class="arrow-btn" [routerLink]="['/product', permalink]">
+        <img src="assets/images/icons/arrow-right-circle.svg"/>
+      </div>
+    </div>
+  </div>
+</div>

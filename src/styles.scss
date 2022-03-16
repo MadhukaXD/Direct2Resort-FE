@@ -1,0 +1,183 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap');
+@import 'assets/styles/font';
+@import 'assets/styles/variables';
+@import "~ng-snotify/styles/material";
+
+$primary_font: 'Gordita', 'Poppins';
+
+body {
+    font-family: $primary_font;
+}
+
+.fa, .far, .fas {
+    font-family: "Font Awesome 5 Free" !important;
+}
+
+input {
+    &:not([type="checkbox"]):not(.form-control-sm):not(.qpi-price) {
+        border: solid 1px $inputBorderColor !important;
+        height: 48px !important;
+        border-radius: 10px !important;
+    }
+}
+
+.form-control-sm {
+    border: solid 1px #c7cfd3 !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+}
+
+textarea{
+    border: solid 1px $inputBorderColor !important;
+    border-radius: 10px !important;
+}
+
+select {
+    height: 48px !important;
+    border-radius: 10px !important;
+    border: solid 1px $inputBorderColor !important;
+}
+
+.btn {
+    height: 48px;
+    border-radius: 10px;
+    outline: none;
+    transition:All 0.6s ease;
+    -webkit-transition:All 0.6s ease;
+    -moz-transition:All 0.6s ease;
+    -o-transition:All 0.6s ease;
+    &.btn-primary {
+        background-color: $buttonsPrimaryColor;
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+    &.btn-secondary {
+        background-color: $buttonsSecondaryColor;
+        border-color: $buttonsSecondaryColor;
+        &:disabled {            
+            &:hover {
+                opacity: 0.65;
+            }
+        }
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+
+    &.ivys-btn-icon-left {
+        font-weight: 500;
+        padding-left: 60px;
+        padding-right: 20px;
+        position: relative;
+        overflow: hidden;
+        border: none;
+        
+        span {                
+            width: 40px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 24px;
+            line-height: 2; 
+            background-color: rgba(255,255,255,0.3);        
+        }
+    }
+}
+
+.ivys-input-group {
+    input {
+        border-radius: 10px;
+        border-right: none !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+    }
+
+    .input-group-append {
+        span {
+            border-radius: 10px;
+            background-color: transparent;
+            border-left: none;
+            border-color: #90a0a7;
+        }
+    }
+}
+
+.input-group {
+    &.input-group-sm {
+        input, button {
+            height: 32px !important;
+            font-size: 14px;
+        }
+    }
+    &.prepend {
+        input {
+            border-top-left-radius: 0 !important;
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 7px !important;
+            border-top-right-radius: 7px !important;
+        }
+    }
+    &.append {
+        input {
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            border-bottom-left-radius: 7px !important;
+            border-top-left-radius: 7px !important;
+        }
+    }
+}
+
+.ivys-input-style {
+    position: relative;
+    margin-bottom: 30px;
+
+    label {
+        position: absolute;
+        top: -9px;
+        left: 20px;
+        font-size: 12px;
+        color: #86989f;
+        background-color: #ffffff;
+        padding: 0 6px;
+        font-weight: 500;
+        z-index: 1;
+    }
+}
+
+.table-ivys {
+    color: #90a0a7 !important;
+
+    thead {
+        tr {
+            th {
+                border-top: none;
+                text-transform: uppercase;
+                font-weight: bold;
+                font-size: 12px;
+            }
+        }
+    }
+
+    tbody {
+        tr {
+            th, td {
+                font-size: 12px;
+                vertical-align: middle;
+                border-top: none;
+                font-weight: 500;
+                
+                .tbl-img {
+                    width: 40px;
+                    height: 40px;
+                    background-color: #e8ecf2;
+                    background-size: cover;
+                    background-repeat: no-repeat;
+                    border-radius: 10px;
+                }
+            }
+        }
+    }
+}

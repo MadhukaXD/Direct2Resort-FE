@@ -1,0 +1,4 @@
+Component Name:
+- [project short name]-[component meaningfull name]-[sub component name if any]
+- example ivys-header, ivys-header-nav
+
