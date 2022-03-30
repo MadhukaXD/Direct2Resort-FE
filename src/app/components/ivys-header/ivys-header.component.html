@@ -2,32 +2,44 @@
   <a class="navbar-brand" href="#">
     <img src="assets/images/logo.png"/>
   </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" 
+  aria-controls="navbarSupportedContent" aria-label="Toggle navigation" (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+    <i class="fas fa-bars"></i>
   </button>
 
-  <div class="collapse navbar-collapse">
-    <ul class="navbar-nav mr-auto">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isCollapsed">
+    <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" routerLink="/home" (click)="isCollapsed = !isCollapsed">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Shop
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="dropdown-item" routerLink="/shop" (click)="isCollapsed = !isCollapsed">All Products</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" [routerLink]="['/shop', cats.category_slug]" *ngFor="let cats of catList" (click)="isCollapsed = !isCollapsed">{{cats.product_cat_name}}</a>
+        </div>
       </li>
       <li class="nav-item">
-        <a class="nav-link" routerLink="/shop">Shop</a>
+        <a class="nav-link" routerLink="/our-promise" (click)="isCollapsed = !isCollapsed">Our Promise</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Service</a>
+        <a class="nav-link" href="http://blog.direct2resort.com" (click)="isCollapsed = !isCollapsed" target="_blank">Blog</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Blog</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Contact</a>
+        <a class="nav-link" routerLink="/contact-us" (click)="isCollapsed = !isCollapsed">Contact</a>
       </li>
     </ul>
 
+    <div class="header-search-box">
+      <app-ivys-header-search></app-ivys-header-search>
+    </div>
+
     <div class="header-action-user-profile">
       <app-ivys-header-login *ngIf="!isLoggedIn"></app-ivys-header-login>
-      <app-ivys-header-actions *ngIf="isLoggedIn"></app-ivys-header-actions>
+      <!-- <app-ivys-header-actions *ngIf="isLoggedIn"></app-ivys-header-actions> -->
       <app-ivys-header-user-profile *ngIf="isLoggedIn"></app-ivys-header-user-profile>  
     </div>  
   </div>

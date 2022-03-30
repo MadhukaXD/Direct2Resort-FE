@@ -1,0 +1,16 @@
+.not-found-page {
+    min-height: calc(100vh - 318px);
+    text-align: center;
+
+    h2 {
+        margin: 0;
+        padding: 50px 0;
+        color: #2858ad;
+        font-weight: 600;
+    }
+
+    img {
+        width: 40%;
+        margin-top: 35px;
+    }
+}

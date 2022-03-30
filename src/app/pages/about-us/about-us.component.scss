@@ -1,0 +1,61 @@
+.about-us-bg {
+    background-image: url('../../../assets/images/about-us-bg.png');
+    background-size: cover;
+    background-position: 0 60px;
+    background-repeat: no-repeat;
+
+    .about-us-section {
+        padding: 70px 0;
+
+        .text-box {
+            h4 {
+                font-size: 22px;
+                color: #3A5A68;
+                margin: 0 0 30px 0;
+            }
+
+            p {
+                font-size: 15px;
+                color: #4a585e;
+                margin: 0 0 30px 0;
+                font-weight: 400;
+                text-align: justify;
+            }
+        }
+
+        .two-img-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            margin-top: 60px;
+
+            img {
+                width: 48%;
+                margin: 0 2% 2% 0;
+            }
+        }
+
+        .single-img-box {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+}
+
+
+@media only screen and (max-width: 767px) {
+    .two-img-box {
+        flex-direction: column !important;
+
+        img {
+            width: 100% !important;
+        }
+    }
+
+    .single-img-box {
+        img {
+            width: 100%;
+        }
+    }
+}

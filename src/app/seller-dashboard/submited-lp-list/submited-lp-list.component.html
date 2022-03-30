@@ -1,0 +1,51 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Submited to Logistic Partner</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">          
+          <div class="col-md-9">
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="table-responsive">
+      <table class="table table-ivys" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Quote ID</th>
+          <th scope="col">Created Date</th>
+          <th scope="col">Last Update</th>
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let quote of quoteList">
+            <th scope="row"></th>
+            <td>{{quote.series_quote_id}}</td>
+            <td>{{quote.created_date | date: 'M/d/yy'}} <br> <small>{{quote.created_date | date: 'h:mm a'}}</small></td>
+            <td>{{quote.last_updated_date | date: 'M/d/yy'}} <br> <small>{{quote.last_updated_date | date: 'h:mm a'}}</small></td>
+            <td>
+              <button type="button" class="btn btn-light btn-sm" [routerLink]="['/seller/lp-submited', quote.series_quote_id]" tooltip="View">
+                <i class="far fa-eye"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>    
+  </div>
+</div>

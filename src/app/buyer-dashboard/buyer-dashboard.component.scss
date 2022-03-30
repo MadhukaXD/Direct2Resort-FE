@@ -63,6 +63,12 @@
     }
 
     .dashboard-body {
-        padding: 40px !important;
+        padding: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .dashboard-body {
+        padding: 0 !important;
     }
 }

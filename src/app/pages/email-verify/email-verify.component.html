@@ -1,0 +1,13 @@
+<div class="email-verify-holder">
+  <div class="evh-body" *ngIf="reqData && verifyStatusSuccess">
+    <h4>Awesome</h4>
+    <p>Your email has been verified. <br> We'll verify your details and activate your account soon. </p>
+    <button type="button" class="btn btn-primary btn-sm" [routerLink]="['/home']">Home</button>
+  </div>
+
+  <div class="evh-body" *ngIf="reqData && !verifyStatusSuccess">
+    <h4>Sorry</h4>
+    <p>Your veirfication token expired or not valid</p>
+    <button type="button" class="btn btn-primary btn-sm" [routerLink]="['/home']">Home</button>
+  </div>
+</div>

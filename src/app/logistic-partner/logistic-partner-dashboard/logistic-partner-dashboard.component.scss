@@ -1,0 +1,57 @@
+.page-holder {
+    .page-header {
+        background-color: #c7cfd3;
+        height: 155px;
+
+        .page-header-inner {
+            padding: 40px 40px 10px 40px;
+
+            h2 {
+                color: #3a5a68;
+                margin: 0;
+                font-size: 22px;
+                font-weight: 400;
+            }
+    
+            .ivys-btn-icon-left {
+                width: 100%;
+            }
+
+            .btn {
+                color: #707a80;
+                font-size: 22px;
+            }
+        }
+        
+    }
+     
+    .page-actions {
+        margin-top: 20px;
+        
+        .ivys-btn-icon-left {
+            width: 100%;
+        }
+    }
+
+    .page-content {
+        padding: 20px 40px 10px 40px;
+    }
+
+    .min-val-holder {
+        display: flex;
+        flex-direction: row;
+
+        .min-val-item {
+            padding: 4px 10px;
+            background-color: #f0f0f0;
+            margin-right: 12px;
+            border-radius: 4px;
+            color: #08ab08;
+
+            img {
+                width: 26px;
+                margin-right: 8px;
+            }
+        }
+    }
+}

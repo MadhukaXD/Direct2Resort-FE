@@ -35,13 +35,17 @@ export class LoginService {
   }
 
   routeUser() {
-    const decodedJwt = jwt_decode(localStorage.getItem('auth-token'));
+    this.router.navigate(['/home']);
+    /*const decodedJwt = jwt_decode(localStorage.getItem('auth-token'));
     if(decodedJwt.userType === 1) {
       this.router.navigate(['/buyer']);
     }
     if(decodedJwt.userType === 2) {
-      this.router.navigate(['/seller']);
+      this.router.navigate(['/seller/manage-quotes']);
     }
+    if(decodedJwt.userType === 3) {
+      this.router.navigate(['/logistic-partner/dashboard']);
+    }*/
   }
 
   getToken(): string {
@@ -56,5 +60,29 @@ export class LoginService {
   logout() {
     localStorage.removeItem('auth-token');
     this.isLoginSubject.next(false);
+  }
+
+  checkEmailExist(email: string) {
+    return this.http.post(`${environment.apiPath}/auth/checkIfEmailExist`, {email}).pipe(
+      map((result: any) => {     
+        return result;
+      })
+    )    
+  }
+
+  sendPwResetLink(userEmail: string) {
+    return this.http.post(`${environment.apiPath}/auth/forgotPassword`, {userEmail}).pipe(
+      map((result: any) => {     
+        return result;
+      })
+    )  
+  }
+
+  updateNewPassword(pwData: any) {
+    return this.http.post(`${environment.apiPath}/auth/resetPasswordByToken`, {newPassword: pwData.confirmPw, pwToken: pwData.token}).pipe(
+      map((result: any) => {     
+        return result;
+      })
+    )  
   }
 }

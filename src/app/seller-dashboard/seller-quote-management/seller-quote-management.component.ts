@@ -31,6 +31,9 @@ export class SellerQuoteManagementComponent implements OnInit {
   };
   imgUploadPath: string;
   qiId: string;
+  lastQuoteInstance: any;
+  editQuote: boolean = false;
+  
   constructor(private sellerQuoteManagementService: SellerQuoteManagementService, private route: ActivatedRoute, private snotifyService: SnotifyService) { }
 
   ngOnInit() {
@@ -57,10 +60,10 @@ export class SellerQuoteManagementComponent implements OnInit {
   loadAll() {
     this.quoteSub = this.route.params.subscribe(params => {
       this.sellerMsg.Quotes_quote_id = params.quoteId;
+      this.getProduct(params.quoteId);
       this.getLastQId(params.quoteId);
       this.getQuote(params.quoteId);
-      this.getQuoteInstance(params.quoteId);
-      this.getProduct(params.quoteId);      
+      this.getQuoteInstance(params.quoteId);          
     });
   }
 
@@ -79,7 +82,7 @@ export class SellerQuoteManagementComponent implements OnInit {
     this.sellerQuoteManagementService.getQuoteInstanceDetails(quoteId).subscribe(
       data => {
         this.quoteInstance = data;
-        console.log(data);
+        this.lastQuoteInstance = data[data.length - 1];
         
         for (let index = 0; index < data.length; index++) {
           if(index === data.length-1) {
@@ -96,6 +99,7 @@ export class SellerQuoteManagementComponent implements OnInit {
     this.sellerQuoteManagementService.getQuoteProduct(quoteId).subscribe(
       data => {
         this.quoteProduct = data;
+        this.sellerMsg.seller_unit_price = data.product_price; 
       }
     )
   }
@@ -109,6 +113,7 @@ export class SellerQuoteManagementComponent implements OnInit {
           this.loadAll();
           this.agreeToTerms = false;
           this.sellerMsg.seller_msg = ''
+          this.editQuote = false;
         }
       )
     } else {
@@ -117,14 +122,30 @@ export class SellerQuoteManagementComponent implements OnInit {
   }
 
   calcTotalAmount() {
-    this.sellerMsg.seller_price = (parseInt(this.quoteProduct.quantity) * this.sellerMsg.seller_unit_price);
+    this.sellerMsg.seller_price = (parseInt(this.quoteProduct.quantity) * this.sellerMsg.seller_unit_price);   
   }
 
   getLastQId(quoteId: number) {
     this.sellerQuoteManagementService.getLastQuoteInstanceId(quoteId).subscribe(qiId => this.qiId = qiId.quote_instance_id);
   }
 
+  readyToShip() {
+    this.sellerQuoteManagementService.updateReadyToShipStatus(this.sellerMsg.Quotes_quote_id).subscribe(
+      data => {
+        console.log(data);        
+      }
+    )
+  }
+
+  editResponse() {
+    this.editQuote = true;
+  }
+
   ngOnDestroy() {
     this.quoteSub.unsubscribe();
+  }
+
+  ngAfterViewChecked() {
+    this.calcTotalAmount();
   }
 }

@@ -1,82 +1,108 @@
 <div class="page-holder" [ng2-loading]="isLoading">
   <div class="page-header">
-    <div class="row">
-      <div class="col-md-6">
-        <h2>Product Listing</h2>
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Product Listing</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
       </div>
-  
-      <div class="col-md-6 text-right">
-        <button class="btn" type="button">
-          <i class="apicon-settings"></i>
-        </button>
-      </div>
-    </div>
-  </div>
 
-  <div class="page-actions">
-    <div class="row">
-      <div class="col-md-3">
-        <div class="input-group ivys-input-group append">
-          <input type="text" class="form-control" placeholder="Search">
-          <div class="input-group-append">
-            <span class="input-group-text">
-              <i class="apicon-search"></i>
-            </span>
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="filter-btns-holder">
+              <div class="filter-label">
+                Product Status:
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('all')" [ngClass]="{'selected': selectedFilter === 'all'}">
+                All
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('pending')" [ngClass]="{'selected': selectedFilter === 'pending'}">
+                Pending
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('approved')" [ngClass]="{'selected': selectedFilter === 'approved'}">
+                Approved
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('inStock')" [ngClass]="{'selected': selectedFilter === 'inStock'}">
+                In-Stock
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('outOfStock')" [ngClass]="{'selected': selectedFilter === 'outOfStock'}">
+                Out of Stock
+              </div>             
+            </div>
           </div>
         </div>
-      </div>
-
-      <div class="col-md-3"></div>
-
-      <div class="col-md-3">
-        <div class="form-group">
-          <select class="form-control">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="col-md-3">
-        <button type="button" class="btn btn-primary ivys-btn-icon-left">
-          <span><i class="apicon-arrow-left"></i></span>
-          Add Products
-        </button>
-      </div>
-    </div>
+      </div> 
+    </div>    
   </div>
 
   <div class="page-content">
-    <table class="table table-ivys">
-      <thead>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col">Product ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Category</th>
-        <th scope="col">Image</th>
-        <th scope="col">Status</th>
-        <th scope="col">Base PPP</th>
-        <th scope="col">Action</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let product of productList">
-        <th scope="row"></th>
-        <td>{{product.product_id}}</td>
-        <td>{{product.product_name}}</td>
-        <td>{{product.product_cat_name}} > {{product.sub_prod_cat_name}}</td>
-        <td>
-          <div class="tbl-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
-        </td>
-        <td>{{product.product_status}}</td>
-        <td>{{product.product_price}}</td>
-        <td></td>
-      </tr>
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table class="table table-ivys" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Product ID</th>
+          <th scope="col">Image</th>
+          <th scope="col">Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Base PPP</th>         
+          <th scope="col">Status</th>
+          <th scope="col">Stock</th>   
+          <th scope="col">Created Date</th>       
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let product of productList">
+          <th scope="row"></th>
+          <td>{{product.product_id}}</td>
+          <td>
+            <div class="tbl-img" [ngStyle]="getProductImg(product.product_imgs)">
+              <p *ngIf="product.is_series_product === 1" tooltip="Belongs to a Product Series">S</p>
+            </div>
+          </td>
+          <td>{{product.product_name}}</td>
+          <td>{{product.product_cat_name}} > {{product.sub_prod_cat_name}}</td>    
+          <td>{{product.product_price | currency}}</td>      
+          <td>
+            <span class="badge badge-light" *ngIf="product.admin_approved === 0">Aproval Pending</span>
+            <span class="badge badge-success" *ngIf="product.admin_approved === 1">Approved</span>
+          </td>
+          <td>
+            <span class="badge badge-warning" *ngIf="product.out_of_stock === 1">Out of Stock</span>
+            <span class="badge badge-success" *ngIf="product.out_of_stock === 0">In-Stock</span>
+          </td>  
+          <td>
+            {{product.created_date | date: 'short'}} <br> 
+            <small *ngIf="product.last_updated">Last Updated On {{product.last_updated | date: 'short'}}</small>
+          </td>        
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" tooltip="In Stock" class="btn btn-light btn-sm" (click)="inStock(product.product_id)" *ngIf="product.out_of_stock === 1">
+                <i class="fas fa-store"></i>
+              </button>
+              <button type="button" tooltip="Out of Stock" class="btn btn-light btn-sm" (click)="outOfStock(product.product_id)" *ngIf="product.out_of_stock === 0">
+                <i class="fas fa-store-slash"></i>
+              </button>
+              <button type="button" tooltip="View Product" class="btn btn-light btn-sm" [routerLink]="['/seller/product', product.product_url]">
+                <i class="far fa-eye"></i>
+              </button>
+              <button type="button" tooltip="Edit" class="btn btn-light btn-sm text-warning" [routerLink]="['/seller/edit-product', product.product_id]">
+                <i class="far fa-edit"></i>
+              </button>
+              <button type="button" tooltip="Delete" class="btn btn-light btn-sm text-danger" (click)="delete(product.product_id)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>            
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>    
   </div>
 </div>

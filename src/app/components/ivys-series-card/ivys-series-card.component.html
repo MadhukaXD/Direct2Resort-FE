@@ -1,0 +1,11 @@
+<div class="product-card-outer">
+  <div class="pco-img" [ngStyle]="{'background-image': 'url('+productSingleImg+')'}" [routerLink]="['/shop-series', seriesUrl]">
+    <div class="series-label">Series</div>
+  </div>
+  <div class="pco-content">
+    <h3>{{productName}}</h3>
+    <div class="arrow-btn" [routerLink]="['/shop-series', seriesUrl]">
+      <img src="assets/images/icons/arrow-right-circle.svg"/>
+    </div>
+  </div>
+</div>

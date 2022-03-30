@@ -1,0 +1,61 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Available Items for Bid</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <table class="table table-ivys">
+      <thead>
+      <tr>
+        <th scope="col">Quote ID</th>
+        <th scope="col">Published Date</th>
+        <th scope="col">Bid Expire Time</th>
+        <th scope="col">Current Bids</th>
+        <th scope="col">Lowest Bid</th>
+        <!-- <th scope="col">Stutus</th> -->
+        <th scope="col">Action</th>        
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let availableQuote of availableQuoteList">
+        <td>{{availableQuote.quote_uuid}}</td>
+        <td>{{availableQuote.submited_to_freight_date | date: 'M/d/yy h:mm a'}}</td>
+        <td>{{availableQuote.bid_expired_in | amDifference: today :'hours' : false}} hours</td>
+        <td>{{availableQuote.count[0].coun}}</td>
+        <td>
+          <div class="min-val-holder">
+            <div class="min-val-item" *ngIf="availableQuote.frieght_type === 'Both' || availableQuote.frieght_type === 'Air'">
+              <img src="assets/images/airplane.svg"/> 
+              <span *ngIf="availableQuote?.minval[0].airMin">{{availableQuote?.minval[0].airMin | currency}}</span>
+              <span *ngIf="!availableQuote?.minval[0].airMin">-</span>
+            </div>
+            <div class="min-val-item" *ngIf="availableQuote.frieght_type === 'Both' || availableQuote.frieght_type === 'Sea'">
+              <img src="assets/images/freight.svg"/> 
+              <span *ngIf="availableQuote?.minval[0].seaMin">{{availableQuote?.minval[0].seaMin | currency}}</span>
+              <span *ngIf="!availableQuote?.minval[0].seaMin">-</span>
+            </div>
+          </div>
+        </td>
+        <!-- <td>
+          <span class="badge badge-success mr-2" *ngIf="availableQuote.lpBidSubmited">
+            Bid Submited
+          </span>
+        </td>         -->
+        <td>
+          <button type="button" class="btn btn-light btn-sm" [routerLink]="['/logistic-partner/bid/', availableQuote.quote_uuid, availableQuote.quote_frieght_uuid]">Bid</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

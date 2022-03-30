@@ -1,29 +1,181 @@
-<div class="container-fluid">
-    <div class="row">
+<div class="container-fluid" [ng2-loading]="isLoading">
+    <div class="row" *ngIf="product?.productInfo?.product_name">
         <div class="col-md-12">
-            <div class="single-product-header"></div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-12">
-            <div class="single-product-info">
-                <div class="sp-img-gallery">
-                    <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig">
-                        <div ngxSlickItem *ngFor="let slide of slides" class="slide" [ngStyle]="{'background-image': 'url('+slide.img+')'}">
-                        </div>
-                    </ngx-slick-carousel>
-
-                    <ngx-slick-carousel class="carousel-nav" #slickModal="slick-carousel" [config]="slideConfigNav">
-                        <div ngxSlickItem *ngFor="let slide of slides" class="slide" [ngStyle]="{'background-image': 'url('+slide.img+')'}">
-                        </div>
-                    </ngx-slick-carousel>
+            <div class="single-product-header">
+                <h3 [routerLink]="['/shop']"><i class="fas fa-arrow-left"></i> Back to Shop</h3>
+                <div class="sp-header-btns">
+                    <button type="button" class="sp-header-btn" (click)="openModalWithComponent('msg')">
+                        <i class="fas fa-envelope"></i>
+                        Message Seller
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="row" *ngIf="product?.productInfo?.product_name">
+        <div class="col-md-12">
+            <div class="single-product-info">
+                <div class="sp-title-section">
+                    <div class="sp-breadcrumb" *ngIf="product?.catInfo?.product_cat_name">
+                        <ul>
+                            <li>
+                                <a routerLink="/home">Home</a>
+                            </li>
+                            <li>
+                                <a [routerLink]="['/shop', product.catInfo.product_cat_id]">{{product?.catInfo?.product_cat_name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="title-wrap" *ngIf="product?.productInfo?.product_name">
+                        <div class="sp-brand-logo" *ngIf="product.productInfo.product_logo !== null" [ngStyle]="getProductImg(product.productInfo.product_logo)"></div>
+                        <div class="spt-holder">
+                            <h1>{{product.productInfo.product_name}}</h1>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="sp-imgs-desc-holder">
+                    <div class="sp-img-gallery" *ngIf="productImgs.length">
+                        <ngx-slick-carousel class="carousel" #slickModal="slick-carousel" [config]="slideConfig">
+                            <div ngxSlickItem *ngFor="let slide of productImgs" class="slide" [ngStyle]="{'background-image': 'url('+slide.img+')'}">
+                            </div>
+                        </ngx-slick-carousel>
+    
+                        <ngx-slick-carousel class="carousel-nav" #slickModal="slick-carousel" [config]="slideConfigNav">
+                            <div ngxSlickItem *ngFor="let slide of productImgs" class="slide" [ngStyle]="{'background-image': 'url('+slide.img+')'}">
+                            </div>
+                        </ngx-slick-carousel>
+                    </div>
+    
+                    <div class="sp-description" [innerHTML]="product.productInfo.product_desc">
+                        
+                    </div>
+                </div>  
+                
+                <div class="sp-right-sidebar">
+                    <div class="spr-item" *ngIf="product?.productInfo?.product_price">
+                        <h5>FOB Reference Price</h5>
+                        <h6 class="fob-price">{{product.productInfo.product_price | currency}}<small>/{{product.productInfo.product_unit}}</small></h6>
+                    </div>
+                    
+                    <div class="spr-item" *ngIf="product?.productInfo?.out_of_stock === 1">
+                        <span class="badge badge-warning">Out of Stock</span>
+                    </div> 
+
+                    <div class="spr-item" *ngIf="product?.productInfo?.out_of_stock === 0">
+                        <button type="button" class="product-page-btn rfq-btn" (click)="openModalWithComponent('rfq')">
+                            <img src="assets/images/icons/qoute.svg"/>
+                            Request a Quote
+                        </button>
+                    </div> 
+                    
+                    <div class="spr-item" *ngIf="product?.productInfo?.offer_samples">
+                        <button type="button" class="product-page-btn rfs-btn" (click)="requestSampleModal(product, sampleRequest)">
+                            <img src="assets/images/icons/products.svg"/>
+                            Request a Sample
+                        </button>
+                    </div>
+
+                    <div class="spr-item">
+                        <table class="product-more-info">
+                            <tr *ngIf="product?.productInfo?.country">
+                                <td>Country</td>
+                                <td>
+                                    <div class="fflag fflag-{{product.productInfo.country}} ff-round ff-lg"></div> 
+                                    <span>{{productCountry}}</span>
+                                </td>
+                            </tr>
+                            <tr *ngIf="product?.productInfo?.product_item_code">
+                                <td>Code</td>
+                                <td>
+                                    {{product?.productInfo?.product_item_code}}
+                                </td>
+                            </tr>
+                            <tr *ngIf="product?.productInfo?.min_order_qty">
+                                <td>MOQ</td>
+                                <td>
+                                    {{product.productInfo.min_order_qty}} <small>{{product?.productInfo?.product_unit}}</small>
+                                </td>
+                            </tr>
+                            <tr *ngIf="product?.productInfo?.offer_samples">
+                                <td>Samples</td>
+                                <td>
+                                    <span *ngIf="product?.productInfo?.offer_samples === 1">Yes</span>
+                                    <span *ngIf="product?.productInfo?.offer_samples === 0">No</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="single-product-more-info">
+                <div>
+                    <tabset>
+                        <tab heading="Product Description" *ngIf="product.productInfo.product_spec_desc !== ''">
+                            <div class="custom-tab-inner-content" [innerHTML]="product.productInfo.product_spec_desc"></div>
+                        </tab>                        
+                        <tab heading="Product Overview" *ngIf="product.productSpecAttr.length">
+                            <div class="product-quick-details">
+                                <h4>Quick Details</h4>
+                                <div class="pqd-list" *ngIf="product.productSpecAttr.length">
+                                    <div class="pqd-item" *ngFor="let pAttr of product.productSpecAttr">
+                                        <div class="quick-detail-key">{{pAttr.attr_key}}</div>
+                                        <div class="quick-detail-value">{{pAttr.attr_value}}</div>
+                                    </div>                            
+                                </div>
+                            </div>
+                        </tab>                        
+                        <tab [heading]="cTabs.product_cus_tab_name" *ngFor="let cTabs of product.customTabs">
+                            <div class="custom-tab-inner-content" [innerHTML]="cTabs.product_cus_tab_desc"></div>
+                        </tab>
+                    </tabset>
+                  </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="product.relatedProducts.length">
+        <div class="col-md-12">
+            <div class="related-products-holder" >
+                <app-product-related-products [relatedProducts]="product.relatedProducts"></app-product-related-products>
+            </div>            
+        </div>
+    </div>
 </div>
 
-<h1>{{product.productInfo.product_name}}</h1>
-<div [innerHTML]="product.productInfo.product_desc"></div>
-<button type="button" class="btn btn-primary" (click)="requestForQuote()">RFQ</button>
+<ng-template #sampleRequest>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Sample Request</h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="sampleReqModal.hide()">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" [ng2-loading]="isLoadingSampleReq">
+        <div class="sample-req-modal">
+            <div class="product-item">
+                <div class="product-img" [ngStyle]="getProductImg(sampleProduct?.productInfo?.product_imgs)"></div>
+                <h3>
+                    {{sampleProduct?.productInfo?.product_name}} <br>
+                    <small>Sample Price: <strong>{{sampleProduct?.productInfo?.product_sample_price | currency}}</strong></small>
+                </h3>
+            </div>
+
+            <div class="form-group ivys-input-style">
+                <label>Note</label>
+                <textarea class="form-control" rows="2" maxlength="500" [(ngModel)]="sampleReqObj.note"></textarea>
+            </div>    
+            
+            <div class="row">
+                <div class="col-md-12 text-right">
+                    <button type="button" class="btn btn-light btn-sm mr-2" (click)="sampleReqModal.hide()">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" (click)="requestSample(sampleProduct)">
+                        Request Sample
+                    </button>
+                </div>
+            </div>
+        </div>        
+    </div>
+</ng-template>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { LoginService } from 'src/app/auth/login.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from "rxjs";
+import { SnotifyService } from 'ng-snotify';
 
 @Component({
   selector: 'app-login',
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   isLoggedIn : Observable<boolean>;
   isLoading: boolean = false;
 
-  constructor(private loginService: LoginService, private router: Router) {
+  constructor(private loginService: LoginService, private router: Router, private snotifyService: SnotifyService) {
     loginService.isLoggedIn().subscribe(data => {
       if(data) {
         loginService.routeUser();
@@ -32,7 +33,7 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  login() {
+  login() {    
     this.isLoading = true;
     this.loginService.login(this.userData.email, this.userData.password).subscribe(
       () => {
@@ -40,7 +41,7 @@ export class LoginComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        console.log(error);        
+        this.snotifyService.error(error.error.message);       
       },
       () => {
         this.isLoading = false;

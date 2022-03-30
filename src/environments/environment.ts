@@ -5,7 +5,10 @@
 export const environment = {
   production: false,
   apiPath: 'http://localhost:8000/api',
-  uploadedImgPath: 'http://localhost:8000/uploads/images'
+  apiV2: 'http://localhost:8000/apiv2',
+  uploadedImgPath: 'http://localhost:8000/uploads/images',  
+  catIconImgPath: 'http://localhost:8000/uploads/category-icons',
+  productSeriesBannerPath: 'http://localhost:8000/uploads/productseriesbanner'
 };
 
 /*

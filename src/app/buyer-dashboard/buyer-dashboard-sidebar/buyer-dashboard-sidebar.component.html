@@ -1,55 +1,55 @@
 <ul class="sidebar-nav">
-  <li>
+  <li routerLink="/buyer/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
-        <i class="apicon-dashboard"></i>
+        <img src="assets/images/icons/dashboard.svg"/>
       </div>
       Dashboard
     </div>
   </li>
 
-  <li>
+  <li routerLink="/buyer/my-quotes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
-        <i class="apicon-orderHistory"></i>
+        <img src="assets/images/icons/qoute.svg"/>
       </div>
-      Order History
+      Quote Request
     </div>
   </li>
 
-  <li routerLink="/buyer/my-quotes">
+  <li routerLink="/buyer/message-box" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
-        <i class="apicon-manageRfq"></i>
+        <img src="assets/images/icons/messages.svg"/>
       </div>
-      Manage RFQ
+      Messages
     </div>
   </li>
 
-  <li>
+  <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-messages"></i>
       </div>
       Messages
     </div>
-  </li>
+  </li> -->
 
-  <li>
+  <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-reviewsAndFeedbacks"></i>
       </div>
       Reviews & Feedbacks
     </div>
-  </li>
+  </li> -->
 
-  <li>
+  <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-settings"></i>
       </div>
       Settings
     </div>
-  </li>
+  </li> -->
 </ul>

@@ -1,0 +1,19 @@
+<div class="ivys-header-search">
+  <div class="search-input-holder">
+    <input autocomplete="off" type="text" placeholder="Search" name="search" (input)="onSearch($event.target.value)" [(ngModel)]="searchedTerm" class="header-search-input"/>
+    <img src="assets/images/icons/search.svg" *ngIf="!isSearchLoading"/>
+    <i class="fas fa-circle-notch fa-spin" *ngIf="isSearchLoading"></i>
+  </div>
+  
+  <ng-container *ngIf="(productList$ | async) as products">
+    <div class="search-result-holder" *ngIf="products.length" [@inOutAnimation]>
+      <ul>
+        <li *ngFor="let product of products">
+          <img [src]="getProductImg(product.product_imgs)"/>
+          <a [routerLink]="['/product', product.product_url]" [innerHTML]="product.product_name | highlight : searchedTerm"></a>
+        </li>
+      </ul>
+    </div> 
+  </ng-container>
+  
+</div>

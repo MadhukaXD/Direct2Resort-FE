@@ -1,0 +1,52 @@
+
+<div class="slider-icon-holder">
+  <owl-carousel-o [options]="customOptions" class="home-main-slider">
+    <ng-template carouselSlide>
+      <div class="slide-inner" style="background-image:url('assets/images/slide-03.jpg')">
+        <div class="slider-text">
+          <h3>A gateway to a world of premium products</h3>
+          <p>Global brands. Direct access to the source. Compare and buy.</p>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template carouselSlide>
+      <div class="slide-inner" style="background-image: url('assets/images/slide-01.jpg')">
+        <div class="slider-text">
+          <h3>A gateway to a world of premium products</h3>
+          <p>Global brands. Direct access to the source. Compare and buy.</p>
+        </div>
+      </div>
+    </ng-template>  
+    <ng-template carouselSlide>
+      <div class="slide-inner" style="background-image:url('assets/images/slide-02.jpg')">
+        <div class="slider-text">
+          <h3>A gateway to a world of premium products</h3>
+          <p>Global brands. Direct access to the source. Compare and buy.</p>
+        </div>
+      </div>
+    </ng-template>    
+    <ng-template carouselSlide>
+      <div class="slide-inner" style="background-image:url('assets/images/slide-04.jpg')">
+        <div class="slider-text">
+          <h3>A gateway to a world of premium products</h3>
+          <p>Global brands. Direct access to the source. Compare and buy.</p>
+        </div>
+      </div>
+    </ng-template>
+  </owl-carousel-o>
+
+  <div class="main-slider-cat-icon-holder">
+
+    <owl-carousel-o [options]="catList" class="home-main-slider-cats">
+      <ng-template carouselSlide *ngFor="let cat of categoryList">
+        <div class="cat-icon-item" [routerLink]="['/shop', cat.category_slug]">
+          <img src="{{catImgPath}}/{{cat.product_cat_img}}"/>
+          <h6>{{cat.product_cat_name}}</h6>
+        </div>
+      </ng-template>
+    </owl-carousel-o>
+
+  </div>
+
+  <div class="bottom-arch-design"></div>
+</div>

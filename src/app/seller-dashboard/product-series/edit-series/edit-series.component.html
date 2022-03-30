@@ -1,0 +1,84 @@
+<form name="form" (ngSubmit)="f.form.valid && updateSeries()" #f="ngForm" novalidate [ng2-loading]="isLoading">
+<div class="modal-header">
+  <h4 class="modal-title pull-left">Edit Product Series</h4>
+  <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">    
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group ivys-input-style">
+        <label>Product Category</label>
+        <select class="form-control" [(ngModel)]="productSeries.product_category_id"
+        name="productCategory" #productCategory="ngModel" [ngClass]="{ 'is-invalid': f.submitted && productCategory.invalid }" required disabled>
+          <option value="">Select</option>
+          <option [value]="pCat.product_cat_id" *ngFor="let pCat of productCatList">{{pCat.product_cat_name}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Product Series Name</label>
+    <input type="text" class="form-control" [(ngModel)]="productSeries.product_series_name" name="seriesName"
+    #seriesName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && seriesName.invalid }" required>
+    <div *ngIf="f.submitted && seriesName.invalid" class="invalid-feedback">
+      <div *ngIf="seriesName.errors.required">Required Field</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label>Description</label>
+    <textarea name="description" class="form-control" [(ngModel)]="productSeries.product_series_desc"
+    #description="ngModel" [ngClass]="{ 'is-invalid': f.submitted && description.invalid }" required></textarea>
+    <div *ngIf="f.submitted && description.invalid" class="invalid-feedback">
+      <div *ngIf="description.errors.required">Required Field</div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="exampleFormControlFile1">Product Series Banner</label>
+    <input type="file" name="productSeriesBanner" class="mb-2" (change)="fileChangeEvent($event)" [(ngModel)]="seriesBanner">       
+    <img [src]="productSeries.product_series_banner" *ngIf="productSeries?.product_series_banner && !croppedImg"/>
+    <img [src]="croppedImg" *ngIf="croppedImg"/>
+  </div>    
+  
+  <div class="form-group">
+    <label>Select Product(s)</label>
+    <ng-multiselect-dropdown
+      name="productList"
+      [placeholder]="'Select Products'"
+      [data]="productList"
+      [(ngModel)]="selectedProducts"
+      [settings]="dropdownSettings"
+      (onSelect)="onItemSelect($event)"
+      (onDeSelect)="onItemDeSelect($event)"
+    >
+    </ng-multiselect-dropdown>
+    <div *ngIf="isProductListEmpty" class="text-danger">Please add products</div>        
+  </div>
+
+  <div class="selected-products-for-ps">
+    <table class="table">
+      <tbody>
+        <tr *ngFor="let sProduct of seriesProductList">
+          <td width="40px">
+            <div class="sppsi-img" [ngStyle]="getProductImg(sProduct.product_imgs)"></div>
+          </td>
+          <td>
+            {{sProduct.product_name}}
+          </td>
+          <td class="text-right">
+            <button type="button" class="btn btn-sm" (click)="removeProduct(sProduct)">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>   
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-primary btn-sm" (click)="bsModalRef.hide()">Cancel</button>
+  <button type="submit" class="btn btn-primary btn-sm">Update</button>
+</div>
+</form>

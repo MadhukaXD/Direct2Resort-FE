@@ -1,0 +1,19 @@
+<p>
+  I Agree to <a (click)="openModal(template)">Lowest Price Guarantee (LPG)</a>
+</p>
+
+<ng-template #template>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Lowest Price Guarantee (LPG)</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      We guarantee all our direct2resort customers that they get the lowest price in the market. 
+      Which means that the price quoted on direct2resort by any seller should be at least 5% cheaper
+      than the standard retail price and/or any direct customer - Samples Offered
+    </p>
+  </div>
+</ng-template>

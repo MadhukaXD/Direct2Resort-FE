@@ -18,4 +18,12 @@ export class MyQuotesService {
       })
     )
   }
+
+  getQuoteQuoteInstancesBuyer(filter: string) {
+    return this.http.post(`${environment.apiPath}/series/getQuoteQuoteInstancesBuyer`, {filter}).pipe(
+      map((data:any) => {
+        return data.data;
+      })
+    )
+  }
 }

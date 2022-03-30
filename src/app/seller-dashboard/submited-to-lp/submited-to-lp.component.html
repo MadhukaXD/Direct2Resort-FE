@@ -1,0 +1,159 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Submited to Logistic Partner
+            <!-- <span>{{quoteInfo.quote_id}} </span>
+            <span class="badge" [ngClass]="{'badge-warning':quoteInfo.final_client_aproval === 'Pending', 'badge-success':quoteInfo.final_client_aproval === 'Approved', 'badge-danger':quoteInfo.final_client_aproval === 'Rejected'}">
+              {{quoteInfo.final_client_aproval}}
+            </span> -->
+          </h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item">
+                <small>Quotation ID</small>
+                <h2>{{quoteInfo?.series_quote_id}}</h2>
+              </div>              
+              <div class="quote-info-item">
+                <small>Quote Created Date</small>
+                <h2>{{quoteInfo?.created_date | date: 'M/d/yy hh:mm a'}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Submited to Logistic Partner On</small>
+                <h2>{{quoteInfo?.submited_to_freight_date | date: 'M/d/yy hh:mm a'}}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote Information</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item">   
+            <table>
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td>QTY</td>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of quoteProduct">
+                  <td>
+                    <div class="qpi-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
+                  </td>
+                  <td>
+                    <h5 class="qpi-name">{{product.product_name}}</h5>
+                  </td>
+                  <td>
+                    <h5 class="qpi-qty">
+                      {{product.quantity}}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>       
+      </div>
+
+      <div class="qma-section">
+        <div class="qmas-header">
+          
+        </div>
+        
+        <div class="package-selector-holder">
+          <div class="bid-summary-box" *ngIf="quoteFreightData">
+            <div class="bsb-header">
+              <h3>Frieght Request Data</h3>
+            </div>
+            <div class="bsb-body">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Origin</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightData?.origin}}</strong>
+                    </td>
+                    <td>Destination</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightData?.destination}}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td colspan="">Shipment</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightData?.boxType}}</strong>
+                    </td>
+                    <td></td>
+                    <td class="text-right"></td>
+                  </tr>
+                  <tr *ngIf="quoteFreightData?.boxType === 'Boxes'">
+                    <td>Unit(s)</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightTypeData?.units}}</strong>
+                    </td>
+                    <td>Volume</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightTypeData?.volume}} {{quoteFreightTypeData?.volumeMessure}}</strong>
+                    </td>
+                  </tr>
+                  <tr *ngIf="quoteFreightData?.boxType === 'Boxes'">
+                    <td>Weight</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightTypeData?.weight}} {{quoteFreightTypeData?.wieghtMessure}}</strong>
+                    </td>
+                    <td></td>
+                    <td class="text-right"></td>
+                  </tr>
+
+                  <tr *ngIf="quoteFreightData?.boxType === 'Container'">
+                    <td>Unit(s)</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightTypeData?.units}}</strong>
+                    </td>
+                    <td>Size</td>
+                    <td class="text-right">
+                      <strong>{{quoteFreightTypeData?.size}}</strong>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+    
+            <div class="bsb-footer"></div>
+          </div>
+
+          <div class="alert alert-success mt-4" role="alert" *ngIf="mainQuote?.logistic_bid_admin_aproval === 1">
+            <h4 class="alert-heading">Logistic Partner Bid Approved</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+              Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+          </div>
+
+          <div class="alert alert-warning mt-4" role="alert" *ngIf="mainQuote?.logistic_bid_admin_aproval === 0">
+            <h4 class="alert-heading">Biding in progress</h4>
+            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. 
+              Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+<div class="product-card-outer">
+  <div class="pco-img" [ngStyle]="{'background-image': 'url('+productSingleImg+')'}" [routerLink]="['/product', permalink]">
+  </div>
+
+  <div class="pco-content">
+    <h3>{{productName}} <br> <small>Min Order Quantity {{minOrderQty}} {{productUnit}}</small></h3>
+    
+    <div class="min-order">
+      <div class="input-group input-group-sm mb-3">
+        <input type="number" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" [(ngModel)]="productQty">
+        <div class="input-group-append">
+          <button type="button" class="btn btn-primary btn-sm" (click)="addToCart(product)" [disabled]="!productQty">        
+            Add to Cart
+          </button>
+        </div>
+      </div>
+      <div class="arrow-btn" [routerLink]="['/product', permalink]">
+        <img src="assets/images/icons/arrow-right-circle.svg"/>
+      </div>
+    </div>
+  </div>
+</div>

@@ -20,7 +20,7 @@ export class BuyerManageQuoteService {
   }
 
   getQuoteInstanceDetails(quoteId: number) {
-    return this.http.get(`${environment.apiPath}/quote/getQuoteInstanceDetails/${quoteId}`).pipe(
+    return this.http.get(`${environment.apiPath}/quote/getQuoteInstanceDetailsBuyer/${quoteId}`).pipe(
       map((data:any) => {
         return data.data;
       })
@@ -41,6 +41,22 @@ export class BuyerManageQuoteService {
         const productSingleImg = data.data[0].product_imgs.split(',')[0];
         data.data[0].product_single_img = productSingleImg;
         return data.data[0];
+      })
+    )
+  }
+
+  updateClientApproval(quoteObj) {
+    return this.http.put(`${environment.apiPath}/buyer/updateClientApproval`, quoteObj).pipe(
+      map((data:any) => {
+        return data.data;
+      })
+    )
+  }
+
+  rejectQuoteInstance(quoteObj: any) {    
+    return this.http.put(`${environment.apiPath}/buyer/rejectQuoteInstance`, quoteObj).pipe(
+      map((data:any) => {
+        return data.data;
       })
     )
   }

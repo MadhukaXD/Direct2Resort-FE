@@ -70,4 +70,12 @@ export class AddProductService {
       })
     )
   }
+
+  getDutyRate() {
+    return this.http.get(`${environment.apiPath}/seller/getDuty`).pipe(
+      map((data:any) => {
+        return data;
+      })
+    )
+  }
 }

@@ -1,0 +1,80 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Ready to Ship / Submited to Logistic Partner</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="filter-btns-holder">
+              <div class="filter-label">
+                RFQ Status:
+              </div>
+              <div class="filter-btn selected">
+                All <div class="divider"></div> <span>{{readyToShipList?.length}}</span>
+              </div>
+              <div class="filter-btn">
+                Pending <div class="divider"></div> <span>4</span>
+              </div>
+              <div class="filter-btn">
+                Approved <div class="divider"></div> <span>12</span>
+              </div>
+              <div class="filter-btn">
+                Rejected <div class="divider"></div> <span>18</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="table-responsive">
+      <table class="table table-ivys" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Quote ID</th>
+          <th scope="col">Created Date</th>
+          <th scope="col">Last Update</th>
+          <th scope="col">Status</th>
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let quote of readyToShipList">
+            <th scope="row"></th>
+            <td>{{quote.series_quote_id}}</td>
+            <td>{{quote.created_date | date: 'M/d/yy'}} <br> <small>{{quote.created_date | date: 'h:mm a'}}</small></td>
+            <td>
+              <div *ngIf="quote.last_updated_date">{{quote.last_updated_date | date: 'M/d/yy'}} <br> <small>{{quote.last_updated_date | date: 'h:mm a'}}</small></div>
+              <div *ngIf="!quote.last_updated_date">-</div>
+            </td>
+            <td>
+              <span class="badge badge-warning" *ngIf="quote.ready_to_ship === 1 && quote.submited_to_freight === 0" tooltip="Ready to submit for the Logistic Partner">
+                Ready to Ship
+              </span>
+              <span class="badge badge-success" *ngIf="quote.ready_to_ship === 1 && quote.submited_to_freight === 1" tooltip="Submited to the Logistic Partner">
+                Submited to LP
+              </span>
+            </td>
+            <td>
+              <button type="button" class="btn btn-light btn-sm" [routerLink]="['/seller/shipping-manager', quote.quote_uuid]" tooltip="Manage Shipment">
+                <i class="fas fa-shipping-fast"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div> 
+  </div>
+</div>

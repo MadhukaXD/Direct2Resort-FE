@@ -1,25 +1,34 @@
+<app-ivys-header></app-ivys-header>
 <div class="row no-gutters login-container">
   <div class="col-md-6">
    <div class="left-side" [ng2-loading]="isLoading">
-     <div class="logo-holder">
-      <img src="../../../assets/images/logo.png" alt="login-logo"> 
-     </div>
 
-     <form (ngSubmit)="login()">
+     <form #loginForm="ngForm" (ngSubmit)="loginForm.form.valid && login()">
         <h3>Login</h3>
         <div class="form-group ivys-input-style">
           <label for="exampleInputEmail1">Email address</label>
-          <input type="email" class="form-control" [(ngModel)]="userData.email" name="email">
+          <input type="email" class="form-control" [(ngModel)]="userData.email" name="email"
+          #email="ngModel" [ngClass]="{ 'is-invalid': email.touched && email.invalid }" required 
+          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+          <div *ngIf="email.touched && email.invalid" class="invalid-feedback">
+            <div *ngIf="email.errors.required">This is a required field</div>
+            <div *ngIf="email.errors.pattern">Please enter valid email</div>
+          </div>
         </div>
         <div class="form-group ivys-input-style">
           <label for="exampleInputPassword1">Password</label>
-          <input type="password" class="form-control" [(ngModel)]="userData.password" name="password">
+          <input type="password" class="form-control" [(ngModel)]="userData.password" name="password"
+          #password="ngModel" [ngClass]="{ 'is-invalid': password.touched && password.invalid }" required>
+          <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+            <div *ngIf="password.errors.required">This is a required field</div>
+          </div>
+          <div class="form-text text-muted">
+            <a href="#" routerLink="/forgot-password">Forgot Password?</a>
+          </div>
         </div>
-        <div class="form-group form-check square-checkbox">
-          <input type="checkbox" class="form-check-input" id="exampleCheck1">
-          <label class="form-check-label" for="exampleCheck1">Check me out</label>
-        </div>
+        
         <button type="submit" class="btn btn-primary btn-block">Login</button>
+        <a href="#" routerLink="/register" class="mt-2">Don't have an account? Signup</a>
       </form>
    </div>
   </div>

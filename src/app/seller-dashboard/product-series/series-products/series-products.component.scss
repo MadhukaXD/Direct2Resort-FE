@@ -1,0 +1,78 @@
+.page-holder {
+    .page-header {
+        background-color: #c7cfd3;
+        height: 155px;
+
+        .page-header-inner {
+            padding: 40px 40px 10px 40px;
+
+            h2 {
+                color: #3a5a68;
+                margin: 0;
+                font-size: 22px;
+                font-weight: 400;
+            }
+    
+            .ivys-btn-icon-left {
+                width: 100%;
+            }
+
+            .btn {
+                color: #707a80;
+                font-size: 22px;
+            }
+        }
+        
+    }
+     
+    .page-actions {
+        margin-top: 20px;
+        
+        .ivys-btn-icon-left {
+            width: 100%;
+        }
+    }
+
+    .page-content {
+        padding: 20px 40px 10px 40px;
+
+        .series-banner {
+            width: 100%;
+
+            .sb-img {
+                width: 100%;
+
+                img {
+                    width: 100%;
+                }
+            }
+
+            .sb-desc {
+                p {
+                    font-size: 14px;
+                }
+            }
+        }
+    }
+}
+
+.selected-products-for-ps {
+    .table {
+        td {
+            vertical-align: middle;
+            font-weight: 500;
+            font-size: 13px;
+
+            .btn {
+                height: 32px !important;
+            }
+        }
+    }
+    .sppsi-img {
+        width: 40px;
+        height: 40px;
+        background-size: 80%;
+        background-repeat: no-repeat;
+        background-position: center center;
+    }
+}

@@ -11,16 +11,7 @@ export class SellerDashboardComponent implements OnInit {
 
   constructor(private http: HttpClient) { }
 
-  ngOnInit() {
-    this.login().subscribe();
-  }
-
-  login() {    
-    return this.http.get(`https://reqres.in/api/users?page=2`).pipe(
-      map((result: any) => {
-        console.log(result);
-      })
-    )
+  ngOnInit() {    
   }
 
   menuToggle(e) {

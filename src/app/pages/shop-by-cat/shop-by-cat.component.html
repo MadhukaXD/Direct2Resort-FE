@@ -1,0 +1,20 @@
+<div class="container-fluid" [ng2-loading]="isLoading">
+  <div class="shop-page-holder">
+    <div class="shop-page-sidebar">
+      <!-- <app-shop-sidebar></app-shop-sidebar> -->
+    </div>
+
+    <div class="shop-page-search-reuslts">
+      <div class="row">
+        <div class="col-md-3" *ngFor="let product of productList" [@inOutAnimation]>      
+          <app-ivys-product-card
+          [productName]="product.product_name" 
+          [permalink]="product.product_url" 
+          [productImg]="product.product_imgs"
+          [minOrderQty]="product.min_order_qty"
+          [productUnit]="product.product_unit"></app-ivys-product-card>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>

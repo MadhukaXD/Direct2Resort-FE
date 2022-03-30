@@ -1,0 +1,17 @@
+.login-reg {
+    margin: 0;
+    list-style: none;
+    display: flex;
+    border: 1px solid #4a6b77;
+    border-radius: 4px;
+    padding: 7px 10px;
+
+    li {               
+        a {
+            font-size: 14px;
+            padding: 0 6px;
+            color: #3a5a68;
+            font-weight: 500;
+        }
+    }
+}

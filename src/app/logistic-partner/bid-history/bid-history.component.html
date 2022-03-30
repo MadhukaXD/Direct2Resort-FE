@@ -1,0 +1,229 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Bid History</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <table class="table table-ivys">
+      <thead>
+      <tr>
+        <th scope="col">Quote ID</th>
+        <th scope="col">Bid Date</th>
+        <th scope="col">Status</th>
+        <th scope="col">Action</th>        
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let bHistory of bidHistory">
+        <td>{{bHistory.quote_uuid}}</td>
+        <td>{{bHistory.bid_submited_date | date: 'M/d/yy h:mm a'}}</td>
+        <td>
+          <span class="badge bg-success text-light" *ngIf="bHistory.bid_status === 'Buyer Approved'">Approved</span>
+          <span class="badge bg-danger text-light" *ngIf="bHistory.bid_status === 'Rejected'">Rejected</span>
+          <span class="badge bg-light text-dark" *ngIf="bHistory.bid_status === 'Pending'">Pending</span>
+        </td>
+        <td>
+          <button type="button" class="btn btn-light btn-sm" (click)="openModal(historyModal, bHistory)">View</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<ng-template #historyModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Bid Breakdown</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    
+    <div class="selected-freights-holder clearfix" *ngIf="selectedBHistory.bid_status === 'Buyer Approved'">
+      <div class="selected-freights">
+        <div class="freight-item">
+          <div class="fi-icon">
+            <img *ngIf="selectedBHistory.approved_bid_type === 'air'" src="assets/images/airplane.svg"/>
+            <img *ngIf="selectedBHistory.approved_bid_type === 'sea'" src="assets/images/freight.svg"/>
+          </div>
+          <div class="fi-content">
+            <h5 *ngIf="selectedBHistory.approved_bid_type === 'air'">{{selectedBHistory?.air_frieght_data_json?.total | currency}}</h5>
+            <h5 *ngIf="selectedBHistory.approved_bid_type === 'sea'">{{selectedBHistory?.sea_frieght_data_json?.total | currency}}</h5>
+            <div class="approved-lbl confirmed">
+              <i class="fas fa-check-circle"></i> Buyer Confirmed
+            </div>
+          </div>          
+        </div>    
+      </div>      
+    </div>
+
+    <div class="bid-quote-tbl">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Terms</th>
+            <th scope="col" class="text-right" >Air Freight Rate</th>
+            <th scope="col" class="text-right" >Air Freight Cost</th>
+            <th scope="col" class="text-right" >Sea Freight Rate</th>
+            <th scope="col" class="text-right" >Sea Freight Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Pickup & Delivery</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.pickupDelivery.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.pickupDelivery.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.pickupDelivery.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.pickupDelivery.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Handling Fees</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.handlingFees.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.handlingFees.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.handlingFees.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.handlingFees.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Export Documents</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.exportDocuments.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.exportDocuments.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.exportDocuments.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.exportDocuments.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Container Loading</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.containerLoading.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.containerLoading.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.containerLoading.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.containerLoading.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Terminal Fees</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.terminalFees.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.terminalFees.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.terminalFees.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.terminalFees.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Freight</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.freight.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.freight.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.freight.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.freight.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Import Documents</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.importDocuments.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.importDocuments.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.importDocuments.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.importDocuments.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Inland to Terminal</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.inlandToTerminal.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.inlandToTerminal.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.inlandToTerminal.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.inlandToTerminal.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Container Unloading</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.containerUnloading.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.containerUnloading.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.containerUnloading.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.containerUnloading.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Import Handling</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.importHandling.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.importHandling.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.importHandling.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.importHandling.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Door Delivery</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.doorDeliveryg.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.doorDeliveryg.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.doorDeliveryg.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.doorDeliveryg.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Customs Clearance</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.customsClearance.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.customsClearance.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.customsClearance.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.customsClearance.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Duty</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.duty.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.duty.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.duty.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.duty.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Taxes</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.taxes.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.taxes.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.taxes.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.taxes.cost | currency}}</td>
+          </tr>
+          <tr>
+            <th>Other</th>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.other.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.air_frieght_data_json?.other.cost | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.other.rate | currency}}</td>
+            <td class="text-right" >{{selectedBHistory?.sea_frieght_data_json?.other.cost | currency}}</td>
+          </tr>               
+        </tbody>
+      </table>
+    </div>
+    <div class="bid-summary-box">
+      <div class="bsb-header">
+        <h3>Bid Summary</h3>
+      </div>
+      <div class="bsb-body">
+        <table>
+          <tbody>
+            <tr>
+              <td>Air Freight Total</td>
+              <td class="text-right">
+                <strong>{{selectedBHistory?.air_frieght_data_json?.total | currency}}</strong>
+              </td>
+              <td>
+                ETA: {{selectedBHistory?.airEta | date: 'MM/dd/yyyy'}}
+              </td>
+            </tr>
+            <tr>
+              <td>Sea Freight Total</td>
+              <td class="text-right">
+                <strong>{{selectedBHistory?.sea_frieght_data_json?.total | currency}}</strong>
+              </td>
+              <td>
+                ETA: {{selectedBHistory?.seaEta | date: 'MM/dd/yyyy'}}
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3">
+               {{selectedBHistory?.special_remarks}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bsb-footer"></div>
+    </div>
+
+  </div>
+</ng-template>

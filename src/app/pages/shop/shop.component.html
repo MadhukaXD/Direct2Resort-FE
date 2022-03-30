@@ -1,7 +1,44 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-md-3" *ngFor="let product of productList">      
-      <app-ivys-product-card [productName]="product.product_name" [permalink]="product.product_url" [productImg]="product.product_imgs"></app-ivys-product-card>
+<div class="container-fluid" [ng2-loading]="isLoading">
+  <div class="shop-page-holder">
+    <div class="shop-page-sidebar closed" (click)="menuToggle($event)">
+      <div class="sidebar-handle">
+        <i class="fas fa-filter"></i>
+      </div>
+      <app-shop-sidebar [category]="catId"></app-shop-sidebar>
     </div>
-  </div>
+
+    <div class="shop-page-search-reuslts">
+      <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let series of productSeriesList">  
+          <app-ivys-series-card
+          [productName]="series.product_series_name" 
+          [productImg]="series.product_series_banner"
+          [seriesUrl]="series.series_url">
+        </app-ivys-series-card>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let product of productList" [@inOutAnimation]>      
+          <app-ivys-product-card
+          [productName]="product.product_name" 
+          [permalink]="product.product_url" 
+          [productImg]="product.product_imgs"
+          [minOrderQty]="product.min_order_qty"
+          [productUnit]="product.product_unit"
+          [productCountry]="product.country"
+          [isSeries]="isSeries(product)"
+          [seriesUrl]="product.product_series_url"></app-ivys-product-card>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="productList?.length">
+        <div class="col-md-12 text-center">
+          <button type="button" class="btn btn-primary btn-sm mt-4" (click)="loadMore()">
+            <i class="fas fa-redo-alt"></i> 
+            Load More Products
+          </button>
+      </div>
+    </div>
+  </div>  
 </div>

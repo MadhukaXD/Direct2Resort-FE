@@ -1,0 +1,603 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Submit to Logistic Partner</h2>
+          <span class="badge mr-1" *ngIf="mainQuote?.ready_to_ship === 1 && mainQuote?.buyer_apporved_frieght_method === null"
+            [ngClass]="{'badge-primary':mainQuote?.ready_to_ship === 1}">
+            Ready to Ship
+          </span>
+          <!-- <span class="badge mr-1 badge-info"
+            *ngIf="mainQuote?.ready_to_ship === 1 && mainQuote?.submited_to_freight === 1 && mainQuote?.buyer_apporved_frieght_method === null">
+            Submitted to LP
+          </span> -->
+
+          <span class="badge mr-1 badge-success"
+            *ngIf="mainQuote?.buyer_apporved_frieght_method === 'Air' || mainQuote?.buyer_apporved_frieght_method === 'Sea'">
+            Buyer Confirmed
+          </span>          
+        </div>
+
+        <div class="col-md-6 text-right">
+
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder" *ngIf="lastQuoteInstance">
+              <div class="quote-info-item">
+                <small>Quote ID</small>
+                <h2>{{mainQuote?.quote_uuid}}</h2>
+              </div>
+
+              <div class="quote-info-item">
+                <small>Quote Created Date</small>
+                <h2>{{mainQuote?.created_date | date: 'M/d/yy h:mm a'}}</h2>
+              </div>
+
+              <div class="quote-info-item" *ngIf="mainQuote?.submited_to_freight === 1">
+                <small>Submited to LP On</small>
+                <h2>{{mainQuote?.submited_to_freight_date | date: 'M/d/yy h:mm a'}}</h2>
+              </div>
+
+              <!-- <div class="quote-info-item">
+                <small>Quote Lsat Update On</small>
+                <h2>{{quoteInfo.last_updated_date | date: 'M/d/yy'}}</h2>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote Information</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item" *ngIf="lastQuoteInstance">
+            <table>
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td class="text-left">
+                  Freight Method
+                </td>
+                <td>QTY</td>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of lastQuoteInstance?.pricingProducts">
+                  <td>
+                    <div class="qpi-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
+                  </td>
+                  <td>
+                    <h5 class="qpi-name">{{product.product_name}}</h5>
+                  </td>
+                  <td>
+                    <h5 class="qpi-name">
+                      <span *ngIf="mainQuote?.frieght_method === 'Both'">Both Air & Sea Freight</span>
+                      <span *ngIf="mainQuote?.frieght_method === 'Sea'">Sea Freight</span>
+                      <span *ngIf="mainQuote?.frieght_method === 'Air'">Air Freight</span>
+                    </h5>
+                  </td>
+                  <td>
+                    <h5 class="qpi-qty">
+                      {{product.quantity}}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="qmas-footer">
+
+        </div>
+      </div>
+      <div class="qma-section">
+        <div class="qmas-header mb-2">
+          <h4>Freight Information</h4>
+        </div>
+
+        <div class="package-selector-holder">
+
+          <div class="submited-frieght-data" *ngIf="mainQuote?.submited_to_freight === 1">
+            <div class="sfd-item">
+              <h4>Origin</h4>
+              <h3>{{freightData?.origin}}</h3>
+            </div>
+            <div class="sfd-item">
+              <h4>Destination</h4>
+              <h3>{{freightData?.destination}}</h3>
+            </div>
+            <div class="sfd-item">
+              <h4>Freight Type</h4>
+              <h3>
+                <span *ngIf="freightData?.frieght_type === 'Both'">Both Air & Sea Freight</span>
+                <span *ngIf="freightData?.frieght_type === 'Sea'">Sea Freight</span>
+                <span *ngIf="freightData?.frieght_type === 'Air'">Air Freight</span>
+              </h3>
+            </div>
+            <div class="sfd-item">
+              <h4>Submited Date</h4>
+              <h3>{{freightData?.created_date | date: 'short'}}</h3>
+            </div>
+
+            <div class="sfd-item" *ngIf="freightData?.boxType === 'Container'">
+              <h4>Box Type</h4>
+              <h3>{{freightData?.boxType}}</h3>
+              <div class="freight-box">
+                <table>
+                  <tr>
+                    <td>Units</td>
+                    <td>
+                      #{{freightData?.boxTypeData?.units}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Size</td>
+                    <td>
+                      {{freightData?.boxTypeData?.size}}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="sfd-item" *ngIf="freightData?.boxType === 'Boxes'">
+              <h4>Box Type</h4>
+              <h3>{{freightData?.boxType}}</h3>
+              <div class="freight-box">
+                <table>
+                  <tr>
+                    <td>Units</td>
+                    <td>
+                      {{freightData?.boxTypeData?.units}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Volume</td>
+                    <td>
+                      {{freightData?.boxTypeData?.volume}}
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CBM'">CM</span>
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CFT'">IN</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Weight</td>
+                    <td>{{freightData?.boxTypeData?.weight}} {{freightData?.boxTypeData?.wieghtMessure}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="sfd-item" *ngIf="freightData?.boxType === 'Pallets'">
+              <h4>Box Type</h4>
+              <h3>{{freightData?.boxType}} ({{freightData?.boxTypeData?.palletName}})</h3>
+              <div class="freight-box">
+                <table>
+                  <tr>
+                    <td>Width</td>
+                    <td>
+                      {{freightData?.boxTypeData?.width}}
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CBM'">CM</span>
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CFT'">IN</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Height</td>
+                    <td>
+                      {{freightData?.boxTypeData?.height}}
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CBM'">CM</span>
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CFT'">IN</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Length</td>
+                    <td>
+                      {{freightData?.boxTypeData?.length}}
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CBM'">CM</span>
+                      <span *ngIf="freightData?.boxTypeData?.volumeMessure === 'CFT'">IN</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Total Volume</td>
+                    <td>{{freightData?.boxTypeData?.totalVolume}} {{freightData?.boxTypeData?.volumeMessure}}</td>
+                  </tr>
+                  <tr>
+                    <td>Weight</td>
+                    <td>{{freightData?.boxTypeData?.weight}} {{freightData?.boxTypeData?.weightMessure}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="sfd-item">
+              <h4>Seller Message</h4>
+              <h3>{{freightData?.sellerMsg}}</h3>
+            </div>
+          </div>
+
+          <form name="form" (ngSubmit)="f.form.valid && sendToFrieghtPartner()" #f="ngForm" novalidate
+            *ngIf="mainQuote?.submited_to_freight === 0">
+
+            <tabset>
+              <tab heading="{{mainQuote?.frieght_method}} Freight">
+                
+                <!-- <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group ivys-input-style">
+                      <label>Shipping Method</label>
+                      <select class="form-control" [(ngModel)]="shippingData.frieght_type" name="shippingMethod"
+                        #shippingMethod="ngModel" [ngClass]="{ 'is-invalid': f.submitted && shippingMethod.invalid }"
+                        required>
+                        <option value="">Select</option>
+                        <option value="Air">Air Frieght</option>
+                        <option value="Sea">Sea Frieght</option>
+                      </select>
+                      <div *ngIf="f.submitted && shippingMethod.invalid" class="invalid-feedback">
+                        <div *ngIf="shippingMethod.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="row mt-4">
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Origin</label>
+                      <input type="text" class="form-control" [(ngModel)]="shippingData.origin" name="origin"
+                        #origin="ngModel" [ngClass]="{ 'is-invalid': f.submitted && origin.invalid }" required>
+                      <div *ngIf="f.submitted && origin.invalid" class="invalid-feedback">
+                        <div *ngIf="origin.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Destination</label>
+                      <input type="text" class="form-control" [(ngModel)]="shippingData.destination" name="destination"
+                        #destination="ngModel" [ngClass]="{ 'is-invalid': f.submitted && destination.invalid }" required>
+                      <div *ngIf="f.submitted && destination.invalid" class="invalid-feedback">
+                        <div *ngIf="destination.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Type</label>
+                      <select class="form-control" [(ngModel)]="shippingData.boxType" name="boxType">
+                        <option *ngFor="let boxType of shippingBoxType" [value]="boxType.type" [disabled]="boxType.type === 'Container' && mainQuote.frieght_method === 'Both' || boxType.type === 'Container' && mainQuote.frieght_method === 'Air'">{{boxType.type}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row" *ngIf="shippingData.boxType === 'Container'">
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="containerUnit" [(ngModel)]="shippingDataContainer.units"
+                        #containerUnit="ngModel" [ngClass]="{ 'is-invalid': f.submitted && containerUnit.invalid }"
+                        required>
+                      <div class="input-group-append">
+                        <span class="input-group-text">Containers</span>
+                      </div>
+                      <div *ngIf="f.submitted && containerUnit.invalid" class="invalid-feedback">
+                        <div *ngIf="containerUnit.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Size</label>
+                      <select class="form-control" name="containerSize" [(ngModel)]="shippingDataContainer.size"
+                        #containerSize="ngModel" [ngClass]="{ 'is-invalid': f.submitted && containerSize.invalid }"
+                        required>
+                        <option value="20' Container size">20' Container size</option>
+                        <option value="40' Container size">40' Container size</option>
+                        <option value="40'HC Container size">40'HC Container size</option>
+                        <option value="45'HC Container size">45'HC Container size</option>
+                        <option value="All Sizes">All Sizes</option>
+                      </select>
+                      <div *ngIf="f.submitted && containerSize.invalid" class="invalid-feedback">
+                        <div *ngIf="containerSize.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row" *ngIf="shippingData.boxType === 'Boxes'">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="boxesData.units" name="boxUnits"
+                          #boxUnits="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxUnits.invalid }" required>
+                        <div class="input-group-append">
+                          <span class="input-group-text">Units</span>
+                        </div>
+                        <div *ngIf="f.submitted && boxUnits.invalid" class="invalid-feedback">
+                          <div *ngIf="boxUnits.errors.required">Required Field</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="boxesData.volume" name="boxVolume"
+                          #boxUnits="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxUnits.invalid }" required>
+                        <div class="input-group-append">
+                          <select class="custom-select" [(ngModel)]="boxesData.volumeMessure" name="boxVolumeMessure">
+                            <option value="CBM">CBM</option>
+                            <option value="CBF">CBF</option>
+                          </select>
+                        </div>
+                        <div *ngIf="f.submitted && boxUnits.invalid" class="invalid-feedback">
+                          <div *ngIf="boxUnits.errors.required">Required Field</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Total Weight</span>
+                        </div>
+                        <input type="text" class="form-control" [(ngModel)]="boxesData.weight" name="boxWeight"
+                          #boxWeight="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxWeight.invalid }" required>
+                        <div class="input-group-append">
+                          <select class="custom-select" [(ngModel)]="boxesData.wieghtMessure" name="boxWieghtMessure">
+                            <option value="Kg">Kg</option>
+                            <option value="Lb">Lb</option>
+                          </select>
+                        </div>
+                        <div *ngIf="f.submitted && boxWeight.invalid" class="invalid-feedback">
+                          <div *ngIf="boxWeight.errors.required">Required Field</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row" *ngIf="shippingData.boxType === 'Pallets'">
+                  <div class="col-md-12">
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" name="palletType" class="custom-control-input" [(ngModel)]="pallertType"
+                        value="48" (change)="palletChange($event.target.value)">
+                      <label class="custom-control-label">40"x48"</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" name="palletType" class="custom-control-input" [(ngModel)]="pallertType"
+                        value="euro1" (change)="palletChange($event.target.value)">
+                      <label class="custom-control-label">Euro 1</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" name="palletType" class="custom-control-input" [(ngModel)]="pallertType"
+                        value="euro2" (change)="palletChange($event.target.value)">
+                      <label class="custom-control-label">Euro 2</label>
+                    </div>
+                    <div class="custom-control custom-radio custom-control-inline">
+                      <input type="radio" name="palletType" class="custom-control-input" [(ngModel)]="pallertType"
+                        value="custom" (change)="palletChange($event.target.value)">
+                      <label class="custom-control-label">Custom</label>
+                    </div>
+                  </div>
+                  <div class="col-md-12">
+                    <div class="freight-box">
+                      <table *ngIf="pallertType === '48'">
+                        <tbody>
+                          <tr>
+                            <td>Height</td>
+                            <td>
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletHeight"
+                                class="form-control form-control-sm"
+                                (keyup)="palletHeightChange($event.target.value, pallertType)">
+                                <span>IN</span>
+                              </div>                              
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Length</td>
+                            <td>48 IN</td>
+                          </tr>
+                          <tr>
+                            <td>Width</td>
+                            <td>40 IN</td>
+                          </tr>
+                          <tr>
+                            <td>Total Volume</td>
+                            <td>
+                              <span *ngIf="palletData?.totalVolume">{{palletData?.totalVolume}}
+                                {{palletData?.volumeMessure}}</span>
+                              <span *ngIf="!palletData?.totalVolume">-</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+    
+                      <table *ngIf="pallertType === 'euro1'">
+                        <tbody>
+                          <tr>
+                            <td>Height</td>
+                            <td>                              
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletHeight"
+                                class="form-control form-control-sm"
+                                (keyup)="palletHeightChange($event.target.value, pallertType)">
+                                <span>CM</span>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Length</td>
+                            <td>120 CM</td>
+                          </tr>
+                          <tr>
+                            <td>Width</td>
+                            <td>80 CM</td>
+                          </tr>
+                          <tr>
+                            <td>Total Volume</td>
+                            <td>
+                              <span *ngIf="palletData?.totalVolume">{{palletData?.totalVolume}}
+                                {{palletData?.volumeMessure}}</span>
+                              <span *ngIf="!palletData?.totalVolume">-</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+    
+                      <table *ngIf="pallertType === 'euro2'">
+                        <tbody>
+                          <tr>
+                            <td>Height</td>
+                            <td>
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletHeight"
+                                class="form-control form-control-sm"
+                                (keyup)="palletHeightChange($event.target.value, pallertType)">
+                                <span>CM</span>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Length</td>
+                            <td>100 CM</td>
+                          </tr>
+                          <tr>
+                            <td>Width</td>
+                            <td>120 CM</td>
+                          </tr>
+                          <tr>
+                            <td>Total Volume</td>
+                            <td>
+                              <span *ngIf="palletData?.totalVolume">{{palletData?.totalVolume}}
+                                {{palletData?.volumeMessure}}</span>
+                              <span *ngIf="!palletData?.totalVolume">-</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+    
+                      <table *ngIf="pallertType === 'custom'">
+                        <tbody>
+                          <tr>
+                            <td></td>
+                            <td>
+                              <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" name="metric" class="custom-control-input" value="CBM"
+                                  (change)="customMetricChange($event.target.value)" checked>
+                                <label class="custom-control-label">CM</label>
+                              </div>
+                              <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" name="metric" class="custom-control-input" value="CFT"
+                                  (change)="customMetricChange($event.target.value)">
+                                <label class="custom-control-label">IN</label>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Height</td>
+                            <td>
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletHeight"
+                                class="form-control form-control-sm" (keyup)="palletCustom($event.target.value, 'height')">
+                                <span *ngIf="palletData.volumeMessure === 'CBM'">CM</span>
+                                <span *ngIf="palletData.volumeMessure === 'CFT'">IN</span>
+                              </div>                              
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Length</td>
+                            <td>
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletLength"
+                                class="form-control form-control-sm" (keyup)="palletCustom($event.target.value, 'length')">
+                                <span *ngIf="palletData.volumeMessure === 'CBM'">CM</span>
+                                <span *ngIf="palletData.volumeMessure === 'CFT'">IN</span>
+                              </div>                               
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Width</td>
+                            <td>
+                              <div class="input-group">
+                                <input type="number" min="0" value="0" name="palletLength"
+                                class="form-control form-control-sm" (keyup)="palletCustom($event.target.value, 'width')">
+                                <span *ngIf="palletData.volumeMessure === 'CBM'">CM</span>
+                                <span *ngIf="palletData.volumeMessure === 'CFT'">IN</span>
+                              </div>                              
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Total Volume</td>
+                            <td>
+                              <span *ngIf="palletData?.totalVolume">{{palletData?.totalVolume}}
+                                {{palletData?.volumeMessure}}</span>
+                              <span *ngIf="!palletData?.totalVolume">-</span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+    
+                  <div class="col-md-6" *ngIf="pallertType">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Total Weight</span>
+                        </div>
+                        <input type="text" class="form-control" [(ngModel)]="palletData.weight" name="palletWeight"
+                          #palletWeight="ngModel" [ngClass]="{ 'is-invalid': f.submitted && palletWeight.invalid }"
+                          required>
+                        <div class="input-group-append">
+                          <select class="custom-select" [(ngModel)]="palletData.weightMessure" name="palletWieghtMessure">
+                            <option value="Kg">Kg</option>
+                            <option value="Lb">Lb</option>
+                          </select>
+                        </div>
+                        <div *ngIf="f.submitted && palletWeight.invalid" class="invalid-feedback">
+                          <div *ngIf="palletWeight.errors.required">Required Field</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+    
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group ivys-input-style">
+                      <label>Seller Description</label>
+                      <textarea name="sellerMsg" class="form-control" rows="4" [(ngModel)]="shippingData.sellerMsg"
+                        #sellerMsg="ngModel" [ngClass]="{ 'is-invalid': f.submitted && sellerMsg.invalid }"
+                        required></textarea>
+                      <div *ngIf="f.submitted && sellerMsg.invalid" class="invalid-feedback">
+                        <div *ngIf="sellerMsg.errors.required">Required Field</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Confirm</button>
+              </tab>
+            </tabset>            
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

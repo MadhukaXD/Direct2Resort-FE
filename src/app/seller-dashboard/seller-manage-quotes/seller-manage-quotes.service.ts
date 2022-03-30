@@ -11,8 +11,8 @@ export class SellerManageQuotesService {
 
   constructor(private http: HttpClient) { }
 
-  getMyQuoteList() {
-    return this.http.get(`${environment.apiPath}/quote/getQuoteListCompany`).pipe(
+  getQuoteQuoteInstancesSellerQuery(filter: string) {
+    return this.http.post(`${environment.apiPath}/series/getQuoteQuoteInstancesSellerQuery`, {filter}).pipe(
       map((data:any) => {
         return data.data;
       })

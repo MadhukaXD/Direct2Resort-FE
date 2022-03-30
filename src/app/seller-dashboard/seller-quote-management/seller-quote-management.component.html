@@ -3,7 +3,7 @@
     <div class="page-header-inner">
       <div class="row">
         <div class="col-md-6">
-          <h2>Manage RFQ > 
+          <h2>Manage Quotes > 
             <span>{{quoteInfo.quote_id}} </span>
             <span class="badge" [ngClass]="{'badge-warning':quoteInfo.final_client_aproval === 'Pending', 'badge-success':quoteInfo.final_client_aproval === 'Approved', 'badge-danger':quoteInfo.final_client_aproval === 'Rejected'}">
               {{quoteInfo.final_client_aproval}}
@@ -12,9 +12,6 @@
         </div>
     
         <div class="col-md-6 text-right">
-          <button class="btn" type="button">
-            <i class="apicon-settings"></i>
-          </button>
         </div>
       </div>
 
@@ -60,8 +57,8 @@
                 <td width="42px">Item</td>
                 <td></td>
                 <td>QTY</td>
-                <td width="100px">Unit Price ($)</td>
-                <td>Amount ($)</td>
+                <td width="100px" *ngIf="quoteInfo.final_client_aproval !== 'Approved'">Unit Price ($)</td>
+                <td *ngIf="quoteInfo.final_client_aproval !== 'Approved'">Amount ($)</td>
               </thead>
               <tbody>
                 <td>
@@ -75,14 +72,14 @@
                     {{quoteProduct.quantity}}
                   </h5>
                 </td>
-                <td>
+                <td *ngIf="quoteInfo.final_client_aproval !== 'Approved'">
                   <div class="form-group ivys-input-style">
                     <input type="number" class="form-control qpi-price" name="unitPrice" [(ngModel)]="sellerMsg.seller_unit_price" (keyup)="calcTotalAmount()">
                   </div>
                 </td>
-                <td>
+                <td *ngIf="quoteInfo?.final_client_aproval !== 'Approved'">
                   <h5 class="qpi-qty">
-                    {{sellerMsg.seller_price | currency}}
+                    {{sellerMsg?.seller_price | currency}}
                   </h5>
                 </td>
               </tbody>
@@ -100,18 +97,36 @@
         </div>
 
         <div class="qmas-footer">
-          <div class="form-group ivys-input-style">
-            <label>Comment</label>
-            <textarea class="form-control" rows="2" [(ngModel)]="sellerMsg.seller_msg" name="sellerMsg"></textarea>
-          </div>
-          <div class="d-flex justify-content-between">
-            <div class="form-group form-check square-checkbox">
-              <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
-              <label class="form-check-label" for="exampleCheck1">I agree to the <a href="#">termns and conditions</a></label>
+          <div *ngIf="!lastQuoteInstance?.seller_msg_time && lastQuoteInstance?.buyer_msg || editQuote">
+            <div class="form-group ivys-input-style">
+              <label>Comment</label>
+              <textarea class="form-control" rows="2" [(ngModel)]="sellerMsg.seller_msg" name="sellerMsg"></textarea>
             </div>
-
-            <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || sellerMsg.seller_msg === ''">Submit Quote</button>
+            <div class="d-flex justify-content-between">
+              <div class="form-group form-check square-checkbox">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
+                <label class="form-check-label" for="exampleCheck1">
+                  <app-ivys-lpg-agreement></app-ivys-lpg-agreement>
+                </label>
+              </div>
+  
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || sellerMsg.seller_msg === ''">Submit Quote</button>
+            </div>
+          </div>   
+          <div *ngIf="quoteInfo.final_client_aproval === 'Approved'">
+            <div class="alert alert-success" role="alert">
+              This quote has been approved by Buyer
+            </div>
+            <button type="button" class="btn btn-primary" (click)="readyToShip()">
+              <i class="fas fa-shipping-fast"></i>
+              Rady to Ship
+            </button>
           </div>
+          <div *ngIf="quoteInfo.final_client_aproval !== 'Approved' && lastQuoteInstance?.seller_msg_time" [hidden]="editQuote">
+            <div class="alert alert-primary" role="alert">
+              Waiting for the buyer response
+            </div>
+          </div>      
         </div>
       </div>
       <div class="qma-section">
@@ -131,9 +146,9 @@
   
             <div class="qmas-msg-item my-msg" *ngIf="qmsg.seller_msg !== null">
               <div class="qmas-msg-body">
-                <h6 class="msg-date-time">{{qmsg.seller_msg_time | date: 'medium'}} by You</h6>
-                <h5>Comment</h5>
+                <h6 class="msg-date-time">{{qmsg?.seller_msg_time | date: 'medium'}} by You</h6>
                 <div class="seller-quote-template">
+                  <span class="badge badge-danger" *ngIf="qmsg.client_reject === 1">Buyer Rejected</span>
                   <table>
                     <thead>
                       <td>Item</td>
@@ -159,7 +174,11 @@
                     </tfoot>
                   </table>
                 </div>
+
+                <h5>Comment</h5>
                 <p>{{qmsg.seller_msg}}</p>
+                <br/>
+                <button type="button" (click)="editResponse();" *ngIf="qmsg.quote_admin_status !== 'Approved'" class="btn btn-warning btn-sm">Edit Quote</button>
               </div>
             </div>
           </div>

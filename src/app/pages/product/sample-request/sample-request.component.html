@@ -1,0 +1,36 @@
+<div class="modal-body-outer" [ng2-loading]="isLoadingSampleReq">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Sample Request</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+
+  <div class="modal-body" [ng2-loading]="isLoadingSampleReq">
+    <div class="sample-req-modal">
+      <div class="product-item">
+        <div class="product-img" [ngStyle]="getProductImg(productData?.productInfo?.product_imgs)"></div>
+        <h3>
+          {{productData?.productInfo?.product_name}} <br>
+          <small>Sample Price: <strong>{{productData?.productInfo?.product_sample_price | currency}}</strong></small>
+        </h3>
+      </div>
+
+      <div class="form-group ivys-input-style">
+        <label>Note</label>
+        <textarea class="form-control" rows="2" maxlength="500" [(ngModel)]="sampleReqObj.note"></textarea>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button type="button" class="btn btn-light btn-sm mr-2" (click)="bsModalRef.hide()">
+            Cancel
+          </button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="requestSample(productData)">
+            Request Sample
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

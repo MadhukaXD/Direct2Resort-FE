@@ -1,0 +1,24 @@
+<div class="related-products" *ngIf="relatedProducts && relatedProducts.length">
+  <h2>You may also like</h2>
+  <div class="related-product-slider" *ngIf="relatedProducts && relatedProducts.length >= 5">
+    <owl-carousel-o [options]="customOptions" class="related-product-slider">
+      <ng-template carouselSlide *ngFor="let relatedProduct of relatedProducts">
+        <app-ivys-product-card 
+              [productName]="relatedProduct.product_name" 
+              [permalink]="relatedProduct.product_url" 
+              [productImg]="relatedProduct.product_imgs"
+              [minOrderQty]="relatedProduct.min_order_qty"
+              [productUnit]="relatedProduct.product_unit"></app-ivys-product-card>
+      </ng-template>
+    </owl-carousel-o> 
+  </div>
+  
+  <div class="related-products-list" *ngIf="relatedProducts && 5 > relatedProducts.length">
+    <app-ivys-product-card *ngFor="let relatedProductlist of relatedProducts"
+      [productName]="relatedProductlist.product_name" 
+      [permalink]="relatedProductlist.product_url" 
+      [productImg]="relatedProductlist.product_imgs"
+      [minOrderQty]="relatedProductlist.min_order_qty"
+      [productUnit]="relatedProductlist.product_unit"></app-ivys-product-card>
+  </div>
+</div>

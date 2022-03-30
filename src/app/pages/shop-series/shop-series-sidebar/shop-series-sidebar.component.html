@@ -1,0 +1,31 @@
+<div class="shop-sidebar">
+  <!-- <div class="ss-search">
+    <input type="text" name="search"/>
+    <i class="apicon-search"></i>
+  </div> -->
+
+  <div class="shop-sidebar-item">
+    <div class="ssi-title">
+      <h3>Filters</h3>
+      <h5>Reset All</h5>
+    </div>
+  </div>
+
+  <div class="shop-sidebar-item" *ngIf="catList?.length">
+    <div class="ssi-sub-title">
+      <h3>Categories</h3>
+      <h5>Reset</h5>
+    </div>
+
+    <div class="category-list">
+      <div class="cat-item" *ngFor="let cat of catList" (click)="selectCategory(cat.product_cat_id)" [ngClass]="{'active': filterParams.categoryId === cat.product_cat_id}">
+        <i class="fas fa-check-circle"></i>
+        <img src="{{catImgPath}}/{{cat.product_cat_img}}"/>
+        <p>{{cat.product_cat_name}}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="shop-sidebar-item">
+  <button type="button" class="btn btn-primary btn-block" (click)="filter()">Filter</button>
+</div>

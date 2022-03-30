@@ -1,0 +1,37 @@
+<section class="featured-products-section" *ngIf="topProductList?.length">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="home-section-title text-center">
+          <h2>Top Sellers</h2>
+          <p>Lorem ipsum dolor sit amet</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="carousel-holder">
+          <owl-carousel-o [options]="customOptions" class="featured-slider" #topSellingSlider>
+            <ng-template carouselSlide *ngFor="let topProduct of topProductList">
+              <div class="hp-item" [routerLink]="isSeries(topProduct)">
+                <div class="hp-item-img" [ngStyle]="getProductImg(topProduct.product_imgs)">
+                  <div *ngIf="isSeriesProduct" class="series-label">Series</div>
+                </div>
+                <h6>{{topProduct.product_name}}</h6>
+                <p *ngIf="topProduct.product_price">{{topProduct.product_price | currency}} <small>/{{topProduct.product_unit}}</small></p>
+              </div>
+            </ng-template>  
+          </owl-carousel-o>
+  
+          <div class="owl-nav-btn owl-prev" (click)="topSellingSlider.prev()">
+            <i class="apicon-arrow-left"></i>
+          </div>
+          <div class="owl-nav-btn owl-next" (click)="topSellingSlider.next()">
+            <i class="apicon-arrow-right"></i>
+          </div>
+        </div>        
+      </div>
+    </div>
+  </div>
+</section>

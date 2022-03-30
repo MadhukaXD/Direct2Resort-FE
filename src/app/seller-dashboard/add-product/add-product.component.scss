@@ -1,19 +1,27 @@
 .page-holder {
     .page-header {
-        h2 {
-            color: #3a5a68;
-            margin: 0;
-            font-size: 22px;
-            font-weight: bold;
-        }
+        background-color: #c7cfd3;
+        height: 155px;
 
-        .ivys-btn-icon-left {
-            width: 100%;
+        .page-header-inner {
+            padding: 40px 40px 10px 40px;
+
+            h2 {
+                color: #3a5a68;
+                margin: 0;
+                font-size: 22px;
+                font-weight: 400;
+            }
+    
+            .ivys-btn-icon-left {
+                width: 100%;
+            }
         }
+        
     } 
 
     .page-content {
-        margin-top: 30px;
+        padding: 20px 40px 10px 40px;
 
         .form-section {
             margin-bottom: 58px;
@@ -206,16 +214,21 @@
     }  
 
     .product-img-upload-list {
+        display: flex;
+        flex-direction: row;
+        margin-top: 15px;
+        
         .uploaded-item {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-
+            position: relative;
+            width: 136px;
+            height: 136px;
+            margin-right: 10px;
+            border: 1px solid #4a6b77;
+            border-radius: 4px;
+            overflow: hidden;
+            
             img {
-                width: 42px;
-                height: 42px;
-                border-radius: 10px;
-                overflow: hidden;
+                width: 100%;
                 margin-right: 18px;
             }
 
@@ -232,12 +245,11 @@
                 text-overflow: ellipsis;
             }
 
-            button.btn {
-                padding: 4px 10px;
-                height: auto;
-                outline: none !important;
-                border: none;
-                margin-left: 20px;
+            .uploaded-item-action {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                padding: 5px 5px;
             }
         }
     }
@@ -259,12 +271,31 @@
     }
 }
 
+.custom-control-input {
+    z-index: 10;
+}
+
+.ng-autocomplete {
+    width: 100%;
+}
+
+
 :host ::ng-deep .product-desc {
     .ck-editor {
         .ck-editor__editable {
             height: 180px;
             border-radius: 10px;
         }        
+    }
+}
+
+:host ::ng-deep .autocomplete-container {
+    box-shadow: none !important;
+
+    .input-container {
+        input {
+            border-radius: .25rem; 
+        }
     }
 }
 
@@ -282,3 +313,20 @@
     }
 }
 
+.modal-body {
+    .cropped-img {
+        width: 136px;
+
+        img {
+            width: 100%;
+        }
+    }
+}
+
+@media all and (max-width: 1400px) {
+    .ivys-input-style {
+        label {
+            position: initial !important;
+        }
+    }
+}

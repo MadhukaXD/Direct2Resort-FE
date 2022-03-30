@@ -1,0 +1,480 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Manage Quotes</h2>
+          <span class="badge mr-1" *ngIf="mainQuote && mainQuote?.submited_to_freight === 0 && mainQuote?.seller_close_quote === 0 && mainQuote?.final_client_aproval !== 'Close'" [ngClass]="{'badge-warning':mainQuote?.final_client_aproval === 'Pending', 
+            'badge-success':mainQuote?.final_client_aproval === 'Aproved', 
+            'badge-danger':mainQuote?.final_client_aproval === 'Rejected'}">
+              {{mainQuote?.final_client_aproval}}
+            </span>
+            <span class="badge mr-1" *ngIf="mainQuote?.ready_to_ship === 1" [ngClass]="{'badge-primary':mainQuote?.ready_to_ship === 1}">
+              Ready to Ship
+            </span>
+            <!-- <span class="badge mr-1 badge-info" *ngIf="mainQuote?.ready_to_ship === 1 && mainQuote?.submited_to_freight === 1">
+              Submitted to LP
+            </span>    -->
+            
+            <span class="badge mr-1 badge-danger" *ngIf="mainQuote?.seller_close_quote === 1">
+              Closed By Seller
+            </span> 
+            
+            <span class="badge mr-1 badge-danger" *ngIf="mainQuote?.final_client_aproval === 'Close'">
+              Closed By You
+            </span> 
+        </div>
+    
+        <div class="col-md-6 text-right">
+          <button type="button" class="btn btn-sm btn-danger" *ngIf="mainQuote?.final_client_aproval === 'Pending' && mainQuote?.final_client_aproval !== 'Close' && mainQuote?.seller_close_quote === 0" (click)="closeQuote(mainQuote)">Close Quote</button>
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item" *ngIf="lastQuoteInstance">
+                <small>Quotation ID</small>
+                <h2>{{lastQuoteInstance?.quote_uuid}}</h2>
+              </div> 
+
+              <div class="quote-info-item" *ngIf="lastQuoteInstance">
+                <small>Created Date</small>
+                <h2>{{mainQuote?.created_date | date: 'M/d/yy hh:mm a'}}</h2>
+              </div>
+
+              <div class="quote-info-item" *ngIf="minBid?.minval !== null">
+                <small>Lowest Logistic Bid</small>
+                <h2>
+                  <span *ngIf="!isLoadingMinBid">{{minBid?.minval | currency}}</span>
+                  <i class="fa fa-circle-o-notch fa-spin" *ngIf="isLoadingMinBid"></i>
+                  <button type="button" class="btn btn-sm" (click)="refreshBid()">
+                    <i class="fas fa-sync-alt"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm" (click)="openLowestBidModal(lowestBidModal)">
+                    <i class="fas fa-list-ul"></i>
+                  </button>
+                </h2>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote Information</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item">   
+            <table>
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td>QTY</td>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of lastQuoteInstance?.pricingProducts">
+                  <td>
+                    <div class="qpi-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
+                  </td>
+                  <td>
+                    <h5 class="qpi-name">{{product.product_name}}</h5>
+                  </td>
+                  <td>
+                    <h5 class="qpi-qty">
+                      {{product.quantity}}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship === 1">
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Ready to Ship</h4>
+            <p>Your order is ready to ship and the Best Shipping Rates will be available on your dashboard within 48 hours</p>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.seller_close_quote === 1">
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Closed By Seller</h4>
+            <p>This quote has been closed by the Seller. You cannot update or contiune this quote.</p>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Close'">
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Closed By You</h4>
+            <p>This quote has been closed by you. You cannot update or contiune this quote.</p>
+          </div>
+        </div>
+        
+      </div>
+
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Discussion Feed</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-msg-list-holder" #scrollMsgFeed>
+            <div *ngFor="let qInstance of fullQuoteInstance">
+              <div *ngFor="let msg of qInstance.tmpMsg">
+                <div class="qmas-msg-item" *ngIf="msg.msgType === 'textMsg'" [ngClass]="{'my-msg': msg.user_category === 1, 'client-msg': msg.user_category === 2}">
+                  <div class="qmas-msg-body">
+                    <!-- <div class="msg-approved-icon" *ngIf="quoteMsg.quote_admin_status === 'Approved' || quoteMsg.quote_admin_status === 'To Buyer'">
+                      <i class="fas fa-check-circle"></i> Admin Approved
+                    </div> -->
+                    <h6 class="msg-date-time">
+                      {{msg?.created_date | date: 'medium'}} by 
+                      <span *ngIf="msg.user_category === 1">Me</span>
+                      <span *ngIf="msg.user_category === 2">Buyer</span>
+                    </h6>
+                    <h5>Comment</h5>
+                    <p>
+                      {{msg?.message_body}}
+                    </p> 
+                    
+                    <div class="qmas-msg-footer" *ngIf="msg.approval === 'Rejected'">
+                      <span class="badge badge-pill badge-danger mt-1">Admin Rejected</span>  
+                      <div class="alert alert-danger mt-2" role="alert" *ngIf="msg.admin_reject_msg">
+                        <strong>Admin Reject Message: </strong> <br>
+                        {{msg.admin_reject_msg}}                                           
+                      </div>
+                    </div>             
+                  </div>                
+                </div>
+
+                <div class="qmas-msg-item client-msg" *ngIf="msg.msgType === 'quoteTpl'">
+                  <div class="qmas-msg-body">
+                    <h4 class="quote-id">Quotation ID #{{qInstance?.series_instance_id}}</h4>
+                    <h6 class="msg-date-time">
+                      {{qInstance?.created_date | date: 'medium'}} by Seller
+                    </h6>
+                    <div>
+                      <div class="seller-quote-template">
+                        <table>
+                          <thead>
+                            <td>Item</td>
+                            <td>QTY</td>
+                            <td>Unit Price($)</td>
+                            <td>Amount</td>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let product of msg.pricingProducts">
+                              <td>
+                                <div>{{product.product_name}}</div>
+                              </td>
+                              <td>{{product.quantity}}</td>
+                              <td>{{product?.pricing[0]?.seller_unit_price | currency}}</td>
+                              <td>{{product?.pricing[0]?.seller_price | currency}}</td>
+                            </tr>
+                          </tbody>
+                          <tfoot>                            
+                            <tr>
+                              <td colspan="3">Total</td>
+                              <td>{{msg.product_items_amount | currency}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="3">Direct2resort fee</td>
+                              <td>{{msg.dirrect_to_resort_fee | currency}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="3">Re-packing and handling</td>                        
+                              <td>{{msg.repacking_handling | currency}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="3">Grand Total (Without Duty)</td>
+                              <td>{{msg.quote_total | currency}}</td>
+                            </tr>  
+                            
+                            <tr>
+                              <td colspan="3">Duty (Estimated)</td>
+                              <td>{{msg.duty_fee | currency}}</td>
+                            </tr>
+                            <tr *ngIf="msg?.manufacture_leadtime">
+                              <td colspan="3">Manufacture Leadtime</td>
+                              <td>{{msg?.manufacture_leadtime}} Days</td>
+                            </tr>
+
+                            <tr>
+                              <td colspan="4">
+                                <p class="special-note">*Duty, Best Shipping Rates (BSR) & any other related cost will be charged at actual cost with the final invoice.  </p>
+                              </td>
+                            </tr>
+                            <!-- <tr>
+                              <td colspan="3">Total</td>
+                              <td>{{quoteMsg.seller_price + quoteMsg.owner_margin | currency}}</td>
+                            </tr> -->
+                          </tfoot>
+                        </table>
+                      </div>
+                      <hr/>
+                      <h5>Comment</h5>
+                      <p>
+                        {{msg?.quoteComment?.message_body}}
+                      </p>
+                      
+                      <span class="badge badge-success mt-1" *ngIf="qInstance.quote_approved === 1">
+                        You have approved this quote
+                      </span>
+
+                      <span class="badge badge-danger mt-1" *ngIf="qInstance.buyer_reject === 1">
+                        You have rejected this quote
+                      </span>
+                      
+                      <div class="alert alert-danger mt-1" role="alert" *ngIf="qInstance.buyer_reject === 1 && qInstance.buyer_rejected_msg">
+                        <strong>Rejected Reason</strong> <br>
+                        {{qInstance.buyer_rejected_msg}}
+                      </div>
+
+                    </div>
+                    <div class="qmas-msg-footer text-right" *ngIf="qInstance.quote_approved === 0 && qInstance.buyer_reject === 0">
+                      <button *ngIf="mainQuote.final_client_aproval === 'Pending' && !msg.rejectFormIsOpen" type="button" class="btn btn-primary btn-sm mr-2" (click)="approveQuote(qInstance)">Approve</button>
+                      <button *ngIf="mainQuote.final_client_aproval === 'Pending' && !msg.rejectFormIsOpen" type="button" class="btn btn-danger btn-sm" (click)="openRejectForm(msg)">Reject</button>
+                    
+                      <div *ngIf="msg.rejectFormIsOpen">
+                        <div class="form-group ivys-input-style mt-4">
+                          <label>Reject Message</label>
+                          <textarea class="form-control" rows="2" [(ngModel)]="quoteRejectMsg" name="quoteRejectMsg"></textarea>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-12 text-right">
+                            <button type="button" class="btn btn-light btn-sm mr-1" (click)="openRejectForm(msg)">Cancel</button>
+                            <button type="button" class="btn btn-danger btn-sm" (click)="rejectQuote(qInstance)">Reject</button>
+                          </div>
+                        </div>
+                      </div>
+                    
+                    </div>                
+                  </div>
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div> 
+        
+        <div class="qmas-footer" [hidden]="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship === 1 || mainQuote?.seller_close_quote === 1 || mainQuote?.final_client_aproval === 'Close'">
+          <div class="form-group ivys-input-style">
+            <label>Message</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="discussionMsg.quoteMessage" name="discussionMsg"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="discussionMsg.quoteMessage === ''">Send Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #lowestBidModal>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Bid Detail</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <tabset>
+      <tab heading="Air Frieght" *ngIf="(airFrieghtInvoice | json) != '{}'">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Terms</th>
+              <th scope="col">Rate</th>
+              <th scope="col">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Pickup & Delivery</th>
+              <td class="text-right">{{airFrieghtInvoice.pickupDelivery.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.pickupDelivery.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Handling Fees</th>
+              <td class="text-right">{{airFrieghtInvoice.handlingFees.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.handlingFees.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Export Documents</th>
+              <td class="text-right">{{airFrieghtInvoice.exportDocuments.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.exportDocuments.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Container Loading</th>
+              <td class="text-right">{{airFrieghtInvoice.containerLoading.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.containerLoading.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Terminal Fees</th>
+              <td class="text-right">{{airFrieghtInvoice.terminalFees.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.terminalFees.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Freight</th>
+              <td class="text-right">{{airFrieghtInvoice.freight.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.freight.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Import Documents</th>
+              <td class="text-right">{{airFrieghtInvoice.importDocuments.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.importDocuments.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Inland to Terminal</th>
+              <td class="text-right">{{airFrieghtInvoice.inlandToTerminal.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.inlandToTerminal.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Container Unloading</th>
+              <td class="text-right">{{airFrieghtInvoice.containerUnloading.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.containerUnloading.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Import Handling</th>
+              <td class="text-right">{{airFrieghtInvoice.importHandling.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.importHandling.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Door Delivery</th>
+              <td class="text-right">{{airFrieghtInvoice.doorDeliveryg.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.doorDeliveryg.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Customs Clearance</th>
+              <td class="text-right">{{airFrieghtInvoice.customsClearance.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.customsClearance.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Duty</th>
+              <td class="text-right">{{airFrieghtInvoice.duty.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.duty.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Taxes</th>
+              <td class="text-right">{{airFrieghtInvoice.taxes.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.taxes.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Other</th>
+              <td class="text-right">{{airFrieghtInvoice.other.rate | currency}}</td>
+              <td class="text-right">{{airFrieghtInvoice.other.cost | currency}}</td>
+            </tr>  
+            <tr>
+              <th colspan="2">Total</th>
+              <td class="text-right">{{airFrieghtInvoice.total | currency}}</td>
+            </tr>             
+          </tbody>
+        </table>
+      </tab>
+      <tab heading="Sea Frieght" *ngIf="(seaFrieghtInvoice | json) != '{}'">
+        <table class="table">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Terms</th>
+              <th scope="col">Rate</th>
+              <th scope="col">Cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Pickup & Delivery</th>
+              <td class="text-right">{{seaFrieghtInvoice.pickupDelivery.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.pickupDelivery.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Handling Fees</th>
+              <td class="text-right">{{seaFrieghtInvoice.handlingFees.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.handlingFees.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Export Documents</th>
+              <td class="text-right">{{seaFrieghtInvoice.exportDocuments.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.exportDocuments.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Container Loading</th>
+              <td class="text-right">{{seaFrieghtInvoice.containerLoading.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.containerLoading.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Terminal Fees</th>
+              <td class="text-right">{{seaFrieghtInvoice.terminalFees.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.terminalFees.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Freight</th>
+              <td class="text-right">{{seaFrieghtInvoice.freight.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.freight.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Import Documents</th>
+              <td class="text-right">{{seaFrieghtInvoice.importDocuments.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.importDocuments.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Inland to Terminal</th>
+              <td class="text-right">{{seaFrieghtInvoice.inlandToTerminal.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.inlandToTerminal.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Container Unloading</th>
+              <td class="text-right">{{seaFrieghtInvoice.containerUnloading.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.containerUnloading.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Import Handling</th>
+              <td class="text-right">{{seaFrieghtInvoice.importHandling.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.importHandling.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Door Delivery</th>
+              <td class="text-right">{{seaFrieghtInvoice.doorDeliveryg.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.doorDeliveryg.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Customs Clearance</th>
+              <td class="text-right">{{seaFrieghtInvoice.customsClearance.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.customsClearance.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Duty</th>
+              <td class="text-right">{{seaFrieghtInvoice.duty.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.duty.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Taxes</th>
+              <td class="text-right">{{seaFrieghtInvoice.taxes.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.taxes.cost | currency}}</td>
+            </tr>
+            <tr>
+              <th>Other</th>
+              <td class="text-right">{{seaFrieghtInvoice.other.rate | currency}}</td>
+              <td class="text-right">{{seaFrieghtInvoice.other.cost | currency}}</td>
+            </tr>  
+            <tr>
+              <th colspan="2">Total</th>
+              <td class="text-right">{{seaFrieghtInvoice.total | currency}}</td>
+            </tr>             
+          </tbody>
+        </table>
+      </tab>
+    </tabset>
+    
+  </div>
+</ng-template>

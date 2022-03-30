@@ -1,0 +1,159 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Product Series</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+          <button class="btn btn-sm btn-light" type="button" (click)="openModal(template)">
+            <i class="fas fa-plus"></i> Create New Series
+          </button>
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="table-responsive">
+      <table class="table table-ivys" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Series ID</th>
+          <th scope="col">Series Name</th>
+          <th scope="col">Category</th>
+          <th scope="col">Created Date</th>
+          <th scope="col">Admin Aproval</th>          
+          <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let series of productSeriesList">
+          <td></td>
+          <td>{{series.product_series_ref_id}}</td>
+          <td>{{series.product_series_name}}</td>
+          <td>{{series.product_cat_name}}</td>   
+          <td>{{series.created_date | date: 'short'}}</td> 
+          <td>
+            <span class="badge badge-warning" *ngIf="series.admin_approval === 'Pending'">Pending</span>
+            <span class="badge badge-success" *ngIf="series.admin_approval === 'Approved'">Approved</span>
+            <span class="badge badge-danger" *ngIf="series.admin_approval === 'Rejected'">Rejected</span>
+          </td>
+          
+          <td>
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-light btn-sm" tooltip="View" [routerLink]="['/seller/series-products', series.product_series_ref_id]">
+                <i class="far fa-eye"></i>
+              </button>
+              <button type="button" tooltip="Edit" class="btn btn-light btn-sm text-warning" (click)="openEditModal(series)">
+                <i class="far fa-edit"></i>
+              </button>
+              <button type="button" tooltip="Delete" class="btn btn-light btn-sm text-danger" (click)="deleteSeries(series)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>            
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>    
+  </div>
+</div>
+
+<ng-template #template>
+  <form name="form" (ngSubmit)="f.form.valid && addProductSeries()" #f="ngForm" novalidate [ng2-loading]="isLoadingForm">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Create a Product Series</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">    
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group ivys-input-style">
+            <label>Product Category</label>
+            <select class="form-control" (change)="getAllProducts($event.target.value)" [(ngModel)]="productSeries.product_category_id"
+            name="productCategory" #productCategory="ngModel" [ngClass]="{ 'is-invalid': f.submitted && productCategory.invalid }" required>
+              <option value="">Select</option>
+              <option [value]="pCat.product_cat_id" *ngFor="let pCat of productCatList">{{pCat.product_cat_name}}</option>
+            </select>
+            <div *ngIf="productCategory.invalid" class="invalid-feedback">
+              <div *ngIf="productCategory.errors.required">Required Field</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="form-group">
+        <label>Product Series Name</label>
+        <input type="text" class="form-control" [(ngModel)]="productSeries.product_series_name" name="seriesName"
+        #seriesName="ngModel" [ngClass]="{ 'is-invalid': f.submitted && seriesName.invalid }" required>
+        <div *ngIf="f.submitted && seriesName.invalid" class="invalid-feedback">
+          <div *ngIf="seriesName.errors.required">Required Field</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" class="form-control" [(ngModel)]="productSeries.product_series_desc"
+        #description="ngModel" [ngClass]="{ 'is-invalid': f.submitted && description.invalid }" required></textarea>
+        <div *ngIf="f.submitted && description.invalid" class="invalid-feedback">
+          <div *ngIf="description.errors.required">Required Field</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="exampleFormControlFile1">Product Series Banner</label>
+        <input type="file" name="productSeriesBanner" class="mb-2" (change)="fileChangeEvent($event)" [(ngModel)]="seriesBanner">       
+        <img [src]="seriesBannerImg" *ngIf="seriesBannerImg"/>
+      </div>    
+      
+      <div class="form-group">
+        <label>Select Product(s)</label>
+        <ng-multiselect-dropdown
+          name="productList"
+          [placeholder]="'Select Products'"
+          [data]="productList"
+          [(ngModel)]="selectedProducts"
+          [settings]="dropdownSettings"
+          (onSelect)="onItemSelect($event)"
+          (onDeSelect)="onItemDeSelect($event)"
+        >
+        </ng-multiselect-dropdown>
+        <div *ngIf="isProductListEmpty" class="text-danger">Please add products</div>        
+      </div>
+  </div>
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary">Create</button>
+  </div>
+</form> 
+</ng-template>
+
+<ng-template #imageCropper>
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Crop the Image</h4>
+  </div>
+  <div class="modal-body">
+    <div class="img-crop-area">
+      <image-cropper
+        [imageChangedEvent]="imageChangedEvent"
+        [maintainAspectRatio]="true"
+        [aspectRatio]="3 / 1"
+        format="png"
+        (imageCropped)="imageCropped($event)"
+        (loadImageFailed)="loadImageFailed()"
+    ></image-cropper>
+    </div>
+    
+    <hr/>
+
+    <h6>Preview</h6>
+    <div class="cropped-img">
+      <img [src]="croppedImage" />
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary btn-sm" (click)="addCroppedImg()">Add Image</button>
+  </div>
+</ng-template>

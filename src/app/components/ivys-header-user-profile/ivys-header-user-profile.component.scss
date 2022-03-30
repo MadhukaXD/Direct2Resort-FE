@@ -1,28 +1,93 @@
-.user-pic-name {
+.wrapper {
     display: flex;
     flex-direction: row;
     align-items: center;
-
-    img {
-        border-radius: 50%;
+    
+    .notification-menu-btn {
         width: 34px;
         height: 34px;
-        margin-left: 26px;
+        border-radius: 50%;
+        text-align: center;
+        padding: 5px 0;
+        margin-right: 5px;
+        cursor: pointer;
+        position: relative;
+
+        .new-count {
+            position: absolute;
+            background-color: #d82626;
+            color: #ffffff;
+            font-size: 10px;
+            padding: 3px 3px;
+            line-height: 1;
+            top: 0;
+            border-radius: 4px;
+        }
     }
+
+    .user-pic-name {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
     
-    h6 {
-        margin: 0;
-        font-size: 12px;
-        margin-left: 8px;
-        font-weight: 400;
+        img {
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            margin-left: 26px;
+        }
+        
+        .user-pic {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background-color: #4a6b77;
+            color: #ffffff;
+            text-align: center;
+            padding: 5px 0;
+            font-weight: 500;
+        }
+    
+        h6 {
+            margin: 0;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: 400;
+        }
     }
 }
 
-
 :host ::ng-deep {
-    .user-profile-drop {
+    .user-profile-drop, .notifications-drop {
         .popover-body {
             padding: 0 !important;
+        }
+    }
+
+    .notifications-drop {
+        min-width: 210px;
+
+        .popover-content {
+            max-height: 346px;
+            overflow: auto;
+            
+            .list-group {
+                .list-group-item {
+                    cursor: pointer;
+
+                    &.new {
+                        background-color: #efefef;
+                    }
+
+                    h5 {
+                        font-size: 12px;
+                    }
+
+                    p {
+                        font-size: 11px;
+                    }
+                }
+            }
         }
     }
 }

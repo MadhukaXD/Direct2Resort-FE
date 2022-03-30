@@ -1,27 +1,21 @@
 <div class="product-card-outer">
-  <div class="pco-img" [ngStyle]="{'background-image': 'url('+productSingleImg+')'}">
+  <div class="pco-img" [ngStyle]="{'background-image': hoverStatus===true ? 'url('+productHoverImg+')' : 'url('+productSingleImg+')'}" routerLink="{{routerLink}}" (mouseover)="imgMouseOver()" (mouseleave)="imgMouseOut()">
     <ul class="card-actions">
-      <li>
-        <img src="assets/images/icons/compare.svg"/>
-      </li>
-      <li>
-        <img src="assets/images/icons/heart.svg"/>
-      </li>      
+      <li class="flag" *ngIf="productCountry">
+        <div class="fflag fflag-{{productCountry}} ff-round ff-lg"></div>
+      </li>     
     </ul>
     
-    <div class="star-rating">
-      <img src="assets/images/icons/star.svg"/>
-      4.1
-    </div>
+    <div class="series-icon" *ngIf="isSeries">Series</div>
   </div>
 
   <div class="pco-content">
     <h3>{{productName}}</h3>
     <div class="min-order">
-      Min order: 1000 sets
-      <div class="arrow-btn" [routerLink]="['/product', permalink]">
+      <span>Min order: {{minOrderQty}} {{productUnit}}</span>
+      <div class="arrow-btn" routerLink="{{routerLink}}">
         <img src="assets/images/icons/arrow-right-circle.svg"/>
-      </div>
+      </div>      
     </div>
   </div>
 </div>

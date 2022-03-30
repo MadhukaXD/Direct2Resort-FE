@@ -1,0 +1,25 @@
+<div class="shop-sidebar">
+  <div class="shop-sidebar-item">
+    <div class="ssi-title">
+      <h3 [routerLink]="['/shop']">
+        <i class="fas fa-arrow-left"></i>
+        Back to Series List
+      </h3>
+    </div>
+  </div>
+
+  <div class="shop-sidebar-item">
+    <ul class="series-list-by-category">
+      <li class="category" *ngIf="categoryInfo">
+        <img src="{{catIconPath}}/{{categoryInfo?.product_cat_img}}"/>
+        {{categoryInfo?.product_cat_name}}
+      </li>
+      <li *ngFor="let series of seriesList">
+        <a [routerLink]="['/shop-series', series.series_url]"
+        routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          {{series.product_series_name}}
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

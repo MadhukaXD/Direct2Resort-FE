@@ -1,0 +1,14 @@
+.shop-page-holder {
+    display: flex;
+    flex-direction: row;
+    padding: 40px 0;
+    min-height: calc(100vh - 78px);
+    
+    .shop-page-sidebar {
+        width: 326px;
+    }
+
+    .shop-page-search-reuslts {
+        width: calc(100% - 326px);
+    }
+}

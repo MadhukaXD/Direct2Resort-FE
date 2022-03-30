@@ -9,7 +9,7 @@
             color: #77888f;
             margin: 0;
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 400;
 
             span {
                 color: #3a5a68;
@@ -306,7 +306,7 @@
                                                     div {
                                                         width: 70px;
                                                         text-align: left !important;
-                                                        font-weight: normal;
+                                                        font-weight: 500;
                                                         white-space: nowrap;
                                                         overflow: hidden;
                                                         text-overflow: ellipsis;
@@ -315,20 +315,31 @@
                                             }
                                         }
                                         tfoot {
-                                            td {
-                                                font-size: 12px;
-                                                font-weight: 500;
-                                                color: #ffffff;
-                                                text-align: right;
-                                                padding-right: 10px;
-                                                padding-top: 5px;
-                                                padding-bottom: 5px;
-                                                border-bottom: 1px solid #ffffff;
-
-                                                &:nth-child(1) {
-                                                    text-align: left !important;
+                                            tr {
+                                                &:nth-child(1), &:nth-child(2), &:nth-child(3) {
+                                                   td {
+                                                        font-weight: 400;
+                                                   }
                                                 }
-                                            }
+                                                &:nth-child(4) {
+                                                    td {
+                                                        border-top: 1px solid #ffffff;
+                                                    }
+                                                }
+                                                td {
+                                                    font-size: 12px;
+                                                    font-weight: 500;
+                                                    color: #ffffff;
+                                                    text-align: right;
+                                                    padding-right: 10px;
+                                                    padding-top: 5px;
+                                                    padding-bottom: 5px;                                               
+    
+                                                    &:nth-child(1) {
+                                                        text-align: left !important;
+                                                    }
+                                                }
+                                            }                                            
                                         }
                                 }
                             }
@@ -339,18 +350,41 @@
                                 justify-content: flex-end;
                                 padding: 20px 0 10px 0;
 
-                                button {
-                                    background-color: #53bac1;
-                                    height: 32px;
-                                    font-size: 12px;
-                                    color: #ffffff;
-                                    padding: 7px 10px 8px 10px;
-                                    font-weight: 400;
-                                }
+                                // button {
+                                //     background-color: #53bac1;
+                                //     height: 32px;
+                                //     font-size: 12px;
+                                //     color: #ffffff;
+                                //     padding: 7px 10px 8px 10px;
+                                //     font-weight: 400;
+                                // }
                             }
                         }
                     }
                 }                
+            }
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .page-content {
+        padding: 10px !important;
+        height: auto !important;
+
+        .quote-managment-panel {
+            flex-direction: column !important;
+            height: auto !important;
+
+            .qma-section {
+                border-right: none !important;
+                width: 100% !important;
+                padding-right: 0 !important;
+                padding-left: 0 !important;
+                
+                .qmas-body {
+                    height: auto !important;
+                }
             }
         }
     }

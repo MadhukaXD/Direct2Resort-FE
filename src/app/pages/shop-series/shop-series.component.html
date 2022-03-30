@@ -1,0 +1,22 @@
+<div class="container-fluid" [ng2-loading]="isLoading">
+  <div class="shop-page-holder">
+    <div class="shop-page-sidebar closed" (click)="menuToggle($event)">
+      <div class="sidebar-handle">
+        <i class="fas fa-filter"></i>
+      </div>
+      <app-shop-series-sidebar></app-shop-series-sidebar>
+    </div>
+
+    <div class="shop-page-search-reuslts">
+      <div class="row">
+        <div class="col-md-3" *ngFor="let series of seriesList">  
+          <app-ivys-series-card
+          [productName]="series.product_series_name" 
+          [productImg]="series.product_series_banner"
+          [seriesUrl]="series.product_series_ref_id">
+        </app-ivys-series-card>
+        </div>
+      </div>
+    </div>
+  </div>  
+</div>

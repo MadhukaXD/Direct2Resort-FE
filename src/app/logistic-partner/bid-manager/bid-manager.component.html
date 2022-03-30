@@ -1,0 +1,1037 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Bid Manager</h2>
+        </div>
+
+        <div class="col-md-6 text-right">
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item">
+                <small>Item ID</small>
+                <h2>{{sellerFreightData?.quote_uuid}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Published Date</small>
+                <h2>{{sellerFreightData?.submited_to_freight_date | date: 'M/d/yy hh:mm a'}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Expire On</small>
+                <h2>{{sellerFreightData?.bid_expired_in | amDifference: today :'hours' : false}} hours</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Lowest Bid</small>
+                <h2>
+                  <span *ngIf="sellerFreightData?.minval !== null">{{sellerFreightData?.minval | currency}}</span>
+                  <span *ngIf="sellerFreightData?.minval === null">-</span>
+                </h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="seller-request">
+          <div class="bid-summary-box">
+            <div class="bsb-header">
+              <h3>Seller Request</h3>
+            </div>
+            <div class="bsb-body">
+              <table>
+                <tbody>
+                  <tr>
+                    <td>Origin</td>
+                    <td class="text-right">
+                      <strong>{{sellerFreightData?.origin}}</strong>
+                    </td>
+                    <td>Destination</td>
+                    <td class="text-right">
+                      <strong>{{sellerFreightData?.destination}}</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>Box Type</td>
+                    <td class="text-right">
+                      <strong>{{sellerFreightData?.boxType}}</strong>
+                    </td>
+                    <td>Shipping Method</td>
+                    <td class="text-right"><strong>{{sellerFreightData?.frieght_type}}</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="bsb-footer"></div>
+          </div>
+
+          <div class="alert alert-success mt-5" role="alert" *ngIf="bidHistory.bid_total_price !== 0 && bidHistory.bidStatus === 'Submited'">
+            <h4 class="alert-heading">Well done!</h4>
+            <p>Your have successfully submited the Bid. If your bid approved you will be notified.</p>            
+          </div>
+
+          <div class="alert alert-success mt-5" role="alert" *ngIf="bidHistory.bidStatus === 'Approved'">
+            <h4 class="alert-heading">Congragulations!</h4>
+            <p>Your bid on this quote has been approved by Direct2Resort.</p>            
+          </div>
+
+          <div class="alert alert-danger mt-5" role="alert" *ngIf="bidHistory.bidStatus === 'Rejected'">
+            <h4 class="alert-heading">Sorry!</h4>
+            <p>Your bid on this quote has been Rejected.</p>            
+          </div>
+
+        </div>
+      </div>
+      <div class="col-md-12" *ngIf="bidHistory.bid_total_price === 0">
+        <tabset>
+          <tab heading="{{sellerFreightData?.frieght_type}} Freight">
+            <form name="form" (ngSubmit)="f.form.valid && postBid()" #f="ngForm" novalidate
+              class="quote-managment-panel mt-2">
+              <div>
+                <div class="qmas-body">
+                  <div class="bid-quote-tbl">
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Terms</th>
+                          <th scope="col" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">Air Freight Rate</th>
+                          <th scope="col" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">Air Freight  Cost</th>
+                          <th scope="col" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">Sea Freight Rate</th>
+                          <th scope="col" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">Sea Freight Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Pickup & Delivery</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="pickupDeliveryRate"
+                              [(ngModel)]="airFreightBidRatesTbl.pickupDelivery.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="pickupDeliveryCost"
+                                [(ngModel)]="airFreightBidRatesTbl.pickupDelivery.cost" (keyup)="calcTotalCost()"
+                                #pickupDeliveryCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && pickupDeliveryCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && pickupDeliveryCost.invalid" class="invalid-feedback">
+                                <div *ngIf="pickupDeliveryCost.errors.required">Required field</div>
+                                <div *ngIf="pickupDeliveryCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="pickupDeliveryRateSea"
+                              [(ngModel)]="seaFreightBidRatesTbl.pickupDelivery.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="pickupDeliveryCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.pickupDelivery.cost" (keyup)="calcTotalCostSea()"
+                                #pickupDeliveryCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && pickupDeliveryCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && pickupDeliveryCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="pickupDeliveryCostSea.errors.required">Required field</div>
+                                <div *ngIf="pickupDeliveryCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Handling Fees</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="handlingFeesRate"
+                              [(ngModel)]="airFreightBidRatesTbl.handlingFees.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="handlingFeesCost"
+                                [(ngModel)]="airFreightBidRatesTbl.handlingFees.cost" (change)="calcTotalCost()"
+                                #handlingFeesCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && handlingFeesCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && handlingFeesCost.invalid" class="invalid-feedback">
+                                <div *ngIf="handlingFeesCost.errors.required">Required field</div>
+                                <div *ngIf="handlingFeesCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="handlingFeesRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.handlingFees.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="handlingFeesCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.handlingFees.cost" (change)="calcTotalCostSea()"
+                                #handlingFeesCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && handlingFeesCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && handlingFeesCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="handlingFeesCostSea.errors.required">Required field</div>
+                                <div *ngIf="handlingFeesCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Export Documents</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="exportDocumentsRate"
+                              [(ngModel)]="airFreightBidRatesTbl.exportDocuments.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="exportDocumentsCost"
+                                [(ngModel)]="airFreightBidRatesTbl.exportDocuments.cost" (change)="calcTotalCost()"
+                                #exportDocumentsCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && exportDocumentsCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && exportDocumentsCost.invalid" class="invalid-feedback">
+                                <div *ngIf="exportDocumentsCost.errors.required">Required field</div>
+                                <div *ngIf="exportDocumentsCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="exportDocumentsRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.exportDocuments.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="exportDocumentsCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.exportDocuments.cost" (change)="calcTotalCostSea()"
+                                #exportDocumentsCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && exportDocumentsCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && exportDocumentsCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="exportDocumentsCostSea.errors.required">Required field</div>
+                                <div *ngIf="exportDocumentsCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Container Loading</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="containerLoadingRate"
+                              [(ngModel)]="airFreightBidRatesTbl.containerLoading.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="containerLoadingCost"
+                                [(ngModel)]="airFreightBidRatesTbl.containerLoading.cost" (change)="calcTotalCost()"
+                                #containerLoadingCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && containerLoadingCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && containerLoadingCost.invalid" class="invalid-feedback">
+                                <div *ngIf="containerLoadingCost.errors.required">Required field</div>
+                                <div *ngIf="containerLoadingCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="containerLoadingRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.containerLoading.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="containerLoadingCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.containerLoading.cost" (change)="calcTotalCostSea()"
+                                #containerLoadingCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && containerLoadingCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && containerLoadingCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="containerLoadingCostSea.errors.required">Required field</div>
+                                <div *ngIf="containerLoadingCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Terminal Fees</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="terminalFeesRate"
+                              [(ngModel)]="airFreightBidRatesTbl.terminalFees.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="terminalFeesCost"
+                                [(ngModel)]="airFreightBidRatesTbl.terminalFees.cost" (change)="calcTotalCost()"
+                                #terminalFeesCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && terminalFeesCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && terminalFeesCost.invalid" class="invalid-feedback">
+                                <div *ngIf="terminalFeesCost.errors.required">Required field</div>
+                                <div *ngIf="terminalFeesCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="terminalFeesRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.terminalFees.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="terminalFeesCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.terminalFees.cost" (change)="calcTotalCostSea()"
+                                #terminalFeesCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && terminalFeesCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && terminalFeesCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="terminalFeesCostSea.errors.required">Required field</div>
+                                <div *ngIf="terminalFeesCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Freight</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="freightRate"
+                              [(ngModel)]="airFreightBidRatesTbl.freight.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="freightCost"
+                                [(ngModel)]="airFreightBidRatesTbl.freight.cost" (change)="calcTotalCost()"
+                                #freightCost="ngModel" [ngClass]="{ 'is-invalid': f.submitted && freightCost.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && freightCost.invalid" class="invalid-feedback">
+                                <div *ngIf="freightCost.errors.required">Required field</div>
+                                <div *ngIf="freightCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="freightRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.freight.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="freightCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.freight.cost" (change)="calcTotalCostSea()"
+                                #freightCostSea="ngModel" [ngClass]="{ 'is-invalid': f.submitted && freightCostSea.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && freightCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="freightCostSea.errors.required">Required field</div>
+                                <div *ngIf="freightCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Import Documents</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="importDocumentsRate"
+                              [(ngModel)]="airFreightBidRatesTbl.importDocuments.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="importDocumentsCost"
+                                [(ngModel)]="airFreightBidRatesTbl.importDocuments.cost" (change)="calcTotalCost()"
+                                #importDocumentsCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && importDocumentsCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && importDocumentsCost.invalid" class="invalid-feedback">
+                                <div *ngIf="importDocumentsCost.errors.required">Required field</div>
+                                <div *ngIf="importDocumentsCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="importDocumentsRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.importDocuments.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="importDocumentsCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.importDocuments.cost" (change)="calcTotalCostSea()"
+                                #importDocumentsCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && importDocumentsCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && importDocumentsCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="importDocumentsCostSea.errors.required">Required field</div>
+                                <div *ngIf="importDocumentsCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Inland to Terminal</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="inlandToTerminalRate"
+                              [(ngModel)]="airFreightBidRatesTbl.inlandToTerminal.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="inlandToTerminalCost"
+                                [(ngModel)]="airFreightBidRatesTbl.inlandToTerminal.cost" (change)="calcTotalCost()"
+                                #inlandToTerminalCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && inlandToTerminalCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && inlandToTerminalCost.invalid" class="invalid-feedback">
+                                <div *ngIf="inlandToTerminalCost.errors.required">Required field</div>
+                                <div *ngIf="inlandToTerminalCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="inlandToTerminalRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.inlandToTerminal.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="inlandToTerminalCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.inlandToTerminal.cost" (change)="calcTotalCostSea()"
+                                #inlandToTerminalCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && inlandToTerminalCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && inlandToTerminalCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="inlandToTerminalCostSea.errors.required">Required field</div>
+                                <div *ngIf="inlandToTerminalCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Container Unloading</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="containerUnloadingRate"
+                              [(ngModel)]="airFreightBidRatesTbl.containerUnloading.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="text" class="form-control" name="containerUnloadingCost"
+                                [(ngModel)]="airFreightBidRatesTbl.containerUnloading.cost" (change)="calcTotalCost()"
+                                #containerUnloadingCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && containerUnloadingCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && containerUnloadingCost.invalid" class="invalid-feedback">
+                                <div *ngIf="containerUnloadingCost.errors.required">Required field</div>
+                                <div *ngIf="containerUnloadingCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="containerUnloadingRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.containerUnloading.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="text" class="form-control" name="containerUnloadingCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.containerUnloading.cost" (change)="calcTotalCostSea()"
+                                #containerUnloadingCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && containerUnloadingCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && containerUnloadingCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="containerUnloadingCostSea.errors.required">Required field</div>
+                                <div *ngIf="containerUnloadingCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Import Handling</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="importHandlingRate"
+                              [(ngModel)]="airFreightBidRatesTbl.importHandling.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="importHandlingCost"
+                                [(ngModel)]="airFreightBidRatesTbl.importHandling.cost" (change)="calcTotalCost()"
+                                #importHandlingCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && importHandlingCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && importHandlingCost.invalid" class="invalid-feedback">
+                                <div *ngIf="importHandlingCost.errors.required">Required field</div>
+                                <div *ngIf="importHandlingCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="importHandlingRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.importHandling.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="importHandlingCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.importHandling.cost" (change)="calcTotalCostSea()"
+                                #importHandlingCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && importHandlingCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && importHandlingCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="importHandlingCostSea.errors.required">Required field</div>
+                                <div *ngIf="importHandlingCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <th>Door Delivery</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="doorDeliverygRate"
+                              [(ngModel)]="airFreightBidRatesTbl.doorDeliveryg.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="doorDeliverygCost"
+                                [(ngModel)]="airFreightBidRatesTbl.doorDeliveryg.cost" (change)="calcTotalCost()"
+                                #doorDeliverygCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && doorDeliverygCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && doorDeliverygCost.invalid" class="invalid-feedback">
+                                <div *ngIf="doorDeliverygCost.errors.required">Required field</div>
+                                <div *ngIf="doorDeliverygCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="doorDeliverygRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.doorDeliveryg.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="doorDeliverygCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.doorDeliveryg.cost" (change)="calcTotalCostSea()"
+                                #doorDeliverygCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && doorDeliverygCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && doorDeliverygCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="doorDeliverygCostSea.errors.required">Required field</div>
+                                <div *ngIf="doorDeliverygCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Customs Clearance</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="customsClearanceRate"
+                              [(ngModel)]="airFreightBidRatesTbl.customsClearance.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="customsClearanceCost"
+                                [(ngModel)]="airFreightBidRatesTbl.customsClearance.cost" (change)="calcTotalCost()"
+                                #customsClearanceCost="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && customsClearanceCost.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && customsClearanceCost.invalid" class="invalid-feedback">
+                                <div *ngIf="customsClearanceCost.errors.required">Required field</div>
+                                <div *ngIf="customsClearanceCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="customsClearanceRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.customsClearance.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="customsClearanceCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.customsClearance.cost" (change)="calcTotalCostSea()"
+                                #customsClearanceCostSea="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && customsClearanceCostSea.invalid }" required
+                                pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && customsClearanceCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="customsClearanceCostSea.errors.required">Required field</div>
+                                <div *ngIf="customsClearanceCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Duty</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="dutyRate"
+                              [(ngModel)]="airFreightBidRatesTbl.duty.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="dutyCost"
+                                [(ngModel)]="airFreightBidRatesTbl.duty.cost" (change)="calcTotalCost()"
+                                #dutyCost="ngModel" [ngClass]="{ 'is-invalid': f.submitted && dutyCost.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && dutyCost.invalid" class="invalid-feedback">
+                                <div *ngIf="dutyCost.errors.required">Required field</div>
+                                <div *ngIf="dutyCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="dutyRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.duty.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="dutyCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.duty.cost" (change)="calcTotalCostSea()"
+                                #dutyCostSea="ngModel" [ngClass]="{ 'is-invalid': f.submitted && dutyCostSea.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && dutyCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="dutyCostSea.errors.required">Required field</div>
+                                <div *ngIf="dutyCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Taxes</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="taxesRate"
+                              [(ngModel)]="airFreightBidRatesTbl.taxes.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="taxesCost"
+                                [(ngModel)]="airFreightBidRatesTbl.taxes.cost" (change)="calcTotalCost()"
+                                #taxesCost="ngModel" [ngClass]="{ 'is-invalid': f.submitted && taxesCost.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && taxesCost.invalid" class="invalid-feedback">
+                                <div *ngIf="taxesCost.errors.required">Required field</div>
+                                <div *ngIf="taxesCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="taxesRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.taxes.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="taxesCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.taxes.cost" (change)="calcTotalCostSea()"
+                                #taxesCostSea="ngModel" [ngClass]="{ 'is-invalid': f.submitted && taxesCostSea.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && taxesCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="taxesCostSea.errors.required">Required field</div>
+                                <div *ngIf="taxesCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr>
+                          <th>Other</th>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="otherRate"
+                              [(ngModel)]="airFreightBidRatesTbl.other.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="otherCost"
+                                [(ngModel)]="airFreightBidRatesTbl.other.cost" (change)="calcTotalCost()"
+                                #otherCost="ngModel" [ngClass]="{ 'is-invalid': f.submitted && otherCost.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && otherCost.invalid" class="invalid-feedback">
+                                <div *ngIf="otherCost.errors.required">Required field</div>
+                                <div *ngIf="otherCost.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <input type="text" class="form-control" name="otherRate"
+                              [(ngModel)]="seaFreightBidRatesTbl.other.rate" />
+                          </td>
+                          <td *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <div class="input-group">
+                              <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                              </div>
+                              <input type="number" class="form-control" name="otherCostSea"
+                                [(ngModel)]="seaFreightBidRatesTbl.other.cost" (change)="calcTotalCostSea()"
+                                #otherCostSea="ngModel" [ngClass]="{ 'is-invalid': f.submitted && otherCostSea.invalid }"
+                                required pattern="^(\d+)?([.]?\d{0,2})?$" />
+                              <div *ngIf="f.submitted && otherCostSea.invalid" class="invalid-feedback">
+                                <div *ngIf="otherCostSea.errors.required">Required field</div>
+                                <div *ngIf="otherCostSea.errors.pattern">Enter valid cost</div>
+                              </div>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="bid-summary-box">
+                    <div class="bsb-header">
+                      <h3>Bid Summary</h3>
+                    </div>
+                    <div class="bsb-body">
+                      <table>
+                        <tbody>
+                          <tr *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <td>Air Freight Total</td>
+                            <td class="text-right">
+                              <strong>{{airFreightBidRatesTbl.total | currency}}</strong>
+                            </td>
+                            <td>                              
+                              <div class="input-group">
+                                <span class="input-group-text">ETA</span>
+                                <input type="text" class="form-control" angular-mydatepicker [(ngModel)]="myDatePickerAir"
+                                  name="estimateArrivalAir" [options]="myDpOptions" #dp="angular-mydatepicker"
+                                  (dateChanged)="onDateChanged($event, 'air')" #estimateArrivalAir="ngModel"
+                                  [ngClass]="{ 'is-invalid': f.submitted && estimateArrivalAir.invalid }" required />
+                                <div class="input-group-append">
+                                  <button type="button" class="btn btn-secondary" (click)="dp.toggleCalendar()">
+                                    <i class="fa fa-calendar-o"></i>
+                                  </button>
+                                </div>
+                                <div *ngIf="f.submitted && estimateArrivalAir.invalid" class="invalid-feedback">
+                                  <div *ngIf="estimateArrivalAir.errors.required">Required field</div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <td>Sea Freight Total</td>
+                            <td class="text-right">
+                              <strong>{{seaFreightBidRatesTbl.total | currency}}</strong>
+                            </td>
+                            <td>                              
+                              <div class="input-group">
+                                <span class="input-group-text">ETA</span>
+                                <input type="text" class="form-control" angular-mydatepicker [(ngModel)]="myDatePickerSea"
+                                  name="estimateArrivalSea" [options]="myDpOptions" #dp="angular-mydatepicker"
+                                  (dateChanged)="onDateChanged($event, 'sea')" #estimateArrival="ngModel"
+                                  [ngClass]="{ 'is-invalid': f.submitted && estimateArrivalSea.invalid }" required />
+                                <div class="input-group-append">
+                                  <button type="button" class="btn btn-secondary" (click)="dp.toggleCalendar()">
+                                    <i class="fa fa-calendar-o"></i>
+                                  </button>
+                                </div>
+                                <div *ngIf="f.submitted && estimateArrivalSea.invalid" class="invalid-feedback">
+                                  <div *ngIf="estimateArrivalSea.errors.required">Required field</div>
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="3">
+                              <textarea class="form-control" rows="4" [(ngModel)]="bidData.special_remarks"
+                                name="specialRemarks" #specialRemarks="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && specialRemarks.invalid }" required></textarea>
+                              <div *ngIf="f.submitted && specialRemarks.invalid" class="invalid-feedback">
+                                <div *ngIf="specialRemarks.errors.required">Required field</div>
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="3" class="text-right">
+                              <button type="submit" class="btn btn-primary">Post the Bid</button>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <div class="bsb-footer"></div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </tab>
+        </tabset>
+      </div>
+
+      <div class="col-md-12" *ngIf="bidHistory.bid_total_price !== 0">
+        <tabset>
+          <tab heading="{{sellerFreightData?.frieght_type}} Freight">
+              <div>
+                <div class="qmas-body">
+                  <div class="bid-quote-tbl">
+                    <table class="table">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th scope="col">Terms</th>
+                          <th scope="col" class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">Air Freight Rate</th>
+                          <th scope="col" class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">Air Freight Cost</th>
+                          <th scope="col" class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">Sea Freight Rate</th>
+                          <th scope="col" class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">Sea Freight Cost</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>Pickup & Delivery</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.pickupDelivery.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.pickupDelivery.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.pickupDelivery.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.pickupDelivery.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Handling Fees</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.handlingFees.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.handlingFees.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.handlingFees.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.handlingFees.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Export Documents</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.exportDocuments.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.exportDocuments.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.exportDocuments.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.exportDocuments.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Container Loading</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.containerLoading.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.containerLoading.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.containerLoading.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.containerLoading.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Terminal Fees</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.terminalFees.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.terminalFees.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.terminalFees.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.terminalFees.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Freight</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.freight.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.freight.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.freight.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.freight.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Import Documents</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.importDocuments.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.importDocuments.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.importDocuments.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.importDocuments.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Inland to Terminal</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.inlandToTerminal.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.inlandToTerminal.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.inlandToTerminal.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.inlandToTerminal.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Container Unloading</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.containerUnloading.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.containerUnloading.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.containerUnloading.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.containerUnloading.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Import Handling</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.importHandling.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.importHandling.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.importHandling.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.importHandling.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Door Delivery</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.doorDeliveryg.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.doorDeliveryg.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.doorDeliveryg.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.doorDeliveryg.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Customs Clearance</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.customsClearance.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.customsClearance.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.customsClearance.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.customsClearance.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Duty</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.duty.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.duty.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.duty.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.duty.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Taxes</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.taxes.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.taxes.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.taxes.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.taxes.cost | currency}}</td>
+                        </tr>
+                        <tr>
+                          <th>Other</th>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.other.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.air_frieght_data_json?.other.cost | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.other.rate | currency}}</td>
+                          <td class="text-right" *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">{{bidHistory?.sea_frieght_data_json?.other.cost | currency}}</td>
+                        </tr>               
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="bid-summary-box">
+                    <div class="bsb-header">
+                      <h3>Bid Summary</h3>
+                    </div>
+                    <div class="bsb-body">
+                      <table>
+                        <tbody>
+                          <tr *ngIf="sellerFreightData?.frieght_type === 'Air' || sellerFreightData?.frieght_type === 'Both'">
+                            <td>Air Freight Total</td>
+                            <td class="text-right">
+                              <strong>{{bidHistory?.air_frieght_data_json?.total | currency}}</strong>
+                            </td>
+                            <td>
+                              ETA: {{bidHistory?.airEta | date: 'MM/dd/yyyy'}}
+                            </td>
+                          </tr>
+                          <tr *ngIf="sellerFreightData?.frieght_type === 'Sea' || sellerFreightData?.frieght_type === 'Both'">
+                            <td>Sea Freight Total</td>
+                            <td class="text-right">
+                              <strong>{{bidHistory?.sea_frieght_data_json?.total | currency}}</strong>
+                            </td>
+                            <td>
+                              ETA: {{bidHistory?.seaEta | date: 'MM/dd/yyyy'}}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colspan="3">
+                             {{bidHistory?.special_remarks}}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+          
+                    <div class="bsb-footer"></div>
+                  </div>
+                </div>
+              </div>
+          </tab>
+        </tabset>
+      </div>
+    </div>
+
+    <div>
+
+    </div>
+  </div>
+</div>

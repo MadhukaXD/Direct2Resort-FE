@@ -12,4 +12,14 @@ export class BuyerDashboardComponent implements OnInit {
   ngOnInit() {
   }
 
+  menuToggle(e) {
+    console.log(e);
+    if(e.srcElement.parentElement.classList.contains('closed')){
+      e.srcElement.parentElement.classList.remove('closed');
+      e.srcElement.parentElement.classList.add('opened');
+    } else {
+      e.srcElement.parentElement.classList.remove('opened');
+      e.srcElement.parentElement.classList.add('closed');
+    }
+  }
 }

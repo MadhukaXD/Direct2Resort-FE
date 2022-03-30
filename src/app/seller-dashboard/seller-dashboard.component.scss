@@ -45,7 +45,7 @@
     }
 }
 
-@media (max-width: 1024px) { 
+@media (max-width: 1280px) { 
     .left-sidebar {
         z-index: 1;
         background-color: #f3f3f3;
@@ -63,6 +63,16 @@
     }
 
     .dashboard-body {
-        padding: 40px !important;
+        padding: 0 !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .left-sidebar {
+        z-index: 10;
+    }
+    
+    .dashboard-body {
+        padding: 0 !important;
     }
 }

@@ -1,0 +1,64 @@
+<div class="container-fluid" [ng2-loading]="isLoading">
+  <div class="shop-page-holder">
+    <div class="shop-page-sidebar closed">
+      <div class="sidebar-handle">
+        <i class="fas fa-filter"></i>
+      </div>
+      <app-series-view-sidebar></app-series-view-sidebar>
+    </div>
+
+    <div class="shop-page-search-reuslts">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="product-series-header">
+            <div class="product-series-banner" [ngStyle]="{'background-image': 'url('+productSeriesInfo?.product_series_banner+')'}"></div>
+            <div class="psb-text">
+              <h3>{{productSeriesInfo?.product_series_name}}</h3>
+              <p>{{productSeriesInfo?.product_series_desc}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6 col-lg-4 col-xl-3" *ngFor="let product of productList">
+          <app-ivys-series-list-item
+          [product]="product"
+          [productName]="product.product_name"
+          [productPrice]="product.product_price"
+          [productImgList]="product.product_imgs"
+          [permalink]="product.product_url"
+          [minOrderQty]="product.min_order_qty"
+          [productUnit]="product.product_unit">
+        </app-ivys-series-list-item>
+        </div>
+      </div>
+    </div>
+
+    <div class="series-rfq-cart" [ngStyle]="{'bottom': cartBottom}" #rfqCart>
+      <div class="series-rfq-cart-header">
+        <h4>RFQ Cart</h4>
+        <div class="toggle-button" (click)="toggleCart()">
+          <i *ngIf="isCartOpen" class="fas fa-chevron-down"></i>
+          <i *ngIf="!isCartOpen" class="fas fa-chevron-up"></i>
+        </div>
+      </div>
+      <div class="series-rfq-cart-body">
+        <p *ngIf="!cart.length">Your cart is empty!</p>
+        <ul *ngIf="cart.length">
+          <li *ngFor="let cartItem of cart">
+            <img [src]="getFirstImg(cartItem.product.product_imgs)"/>
+            <h6>{{cartItem.product.product_name}}</h6>
+            <h6>x {{cartItem.qty}}</h6>
+            <button type="button" class="btn btn-light btn-sm text-danger" (click)="removeCartItem(cartItem)">
+              <i class="far fa-trash-alt"></i>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="series-rfq-cart-footer text-right" *ngIf="cart.length">
+        <button type="button" class="btn btn-primary btn-sm" (click)="seriesRfq()">Request a Quote</button>
+      </div>
+    </div>
+  </div>  
+</div>

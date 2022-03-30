@@ -1,0 +1,206 @@
+.shop-page-holder {
+    display: flex;
+    flex-direction: row;
+    padding: 40px 0;
+    min-height: calc(100vh - 78px);
+    
+    .shop-page-search-reuslts {
+        
+        .product-series-header {
+            display: flex;
+            flex-direction: row;
+            position: relative;
+            align-items: center;
+            margin-bottom: 16px;
+
+            .product-series-banner {
+                width: 50%;
+                height: 210px;
+                background-size: cover;
+                position: relative;
+                &:after {
+                    content: "";
+                    position: absolute;
+                    right: 0;
+                    width: 100%;
+                    height: 100%;
+                    /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,ffffff+94&0+0,1+94 */
+background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(255,255,255,1) 94%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 94%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(255,255,255,1) 94%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+
+
+                }                
+            }
+            .psb-text {
+                width: 50%;
+                padding: 10px 0 0 20px;
+                text-align: center;
+            }
+        }               
+    }
+
+    .shop-page-sidebar {
+        width: 326px;
+        transition:All 0.6s ease;
+        -webkit-transition:All 0.6s ease;
+        -moz-transition:All 0.6s ease;
+        -o-transition:All 0.6s ease;
+
+        .sidebar-handle {
+            width: 40px;
+            height: 40px;
+            background-color: #3a5a68;
+            position: absolute;
+            right: -40px;
+            top: 0;
+            color: #ffffff;
+            padding: 10px 10px;
+            border-top-right-radius: 14px;
+            border-bottom-right-radius: 14px;
+            display: none;
+        }
+    }
+
+    .shop-page-search-reuslts {
+        width: calc(100% - 326px);
+
+        .product-series-header {
+            h3 {
+                font-size: 20px;
+                font-weight: 400;
+            }
+
+            p { 
+                font-size: 13px;
+            }
+        }
+    }
+
+    .series-rfq-cart {
+        position: fixed;
+        right: 20px;
+        bottom: 0;
+        width: 400px;
+        max-height: 400px;
+        box-shadow: 0 0 7.5px 0 rgba(34, 60, 71, 0.2);
+        border-top-right-radius: 4px;   
+        border-top-left-radius: 4px;     
+        padding-bottom: 32px;
+        background-color: #ffffff;
+        z-index: 10;
+        transition:All 1s ease;
+        -webkit-transition:All 1s ease;
+        -moz-transition:All 1s ease;
+        -o-transition:All 1s ease;
+
+        .series-rfq-cart-header {
+            padding: 10px 10px;
+            border-bottom: 1px solid #e4e4e4;
+            display: flex;
+            justify-content: space-between;
+
+            h4 {
+                margin: 0;
+                font-size: 16px;
+                font-weight: 400;
+            }
+            
+            .toggle-button {
+                cursor: pointer;
+                i {
+                    padding: 0 10px;
+                }
+            }
+        }
+
+        .series-rfq-cart-body {
+            padding: 10px 10px;
+            max-height: 360px;
+
+            p {
+                margin: 0;
+            }
+            
+            ul {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+
+                li {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    border-bottom: 1px solid #e4e4e4;
+                    margin-bottom: 7px;
+                    padding: 7px 0;
+
+                    img {
+                        width: 40px;
+                        margin-right: 15px;
+                    }
+
+                    h6 {
+                        font-size: 14px;
+                        font-weight: 400;
+                        margin: 0;
+                        max-width: 200px;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        margin-right: 15px;
+                    }
+
+                    button {
+                        position: absolute;
+                        right: 10px;
+                    }
+                }
+            }
+        }
+
+        .series-rfq-cart-footer {
+            text-align: right!important;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+        }
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .shop-page-sidebar {
+        position: fixed;
+        z-index: 10;
+        background-color: #ffffff;
+        top: 85px;
+        height: 100%;
+        padding: 0 20px;
+        box-shadow: 1px 10px 8.5px 0 rgba(34, 60, 71, 0.1);
+
+        &.closed {
+            left: -326px;
+        }
+        &.opened {
+            left: 0;
+        }
+
+        .sidebar-handle {
+            display: block !important;
+        }
+    }
+
+    .shop-page-search-reuslts {
+        width: 100% !important;
+    }
+}
+
+@media only screen and (max-width: 1450px) and (min-width: 1200px){
+    .col-lg-4 {
+        flex: 0 0 33.3% !important;
+        max-width: 33.3% !important;
+    }
+}

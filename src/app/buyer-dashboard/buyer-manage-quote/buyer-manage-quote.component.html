@@ -1,9 +1,9 @@
-<div class="page-holder" [ng2-loading]="isLoading">
+<div class="page-holder" [ng2-loading]="isLoadinggetQuote || isLoadingGetProducts || isLoadinggetQuoteInstance || isLoadingSendMsg || isLoadingApproveQuote">
   <div class="page-header">
     <div class="page-header-inner">
       <div class="row">
         <div class="col-md-6">
-          <h2>Manage RFQ > 
+          <h2>Manage Quotes > 
             <span>{{quoteInfo.quote_id}} </span>
             <span class="badge" [ngClass]="{'badge-warning':quoteInfo.final_client_aproval === 'Pending', 'badge-success':quoteInfo.final_client_aproval === 'Approved', 'badge-danger':quoteInfo.final_client_aproval === 'Rejected'}">
               {{quoteInfo.final_client_aproval}}
@@ -12,9 +12,7 @@
         </div>
     
         <div class="col-md-6 text-right">
-          <button class="btn" type="button">
-            <i class="apicon-settings"></i>
-          </button>
+          
         </div>
       </div>
 
@@ -77,18 +75,36 @@
         </div>
 
         <div class="qmas-footer">
-          <div class="form-group ivys-input-style">
-            <label>Comment</label>
-            <textarea class="form-control" rows="2" [(ngModel)]="buyerMsg.buyer_msg" name="buyerMsg"></textarea>
-          </div>
-          <div class="d-flex justify-content-between">
-            <div class="form-group form-check square-checkbox">
-              <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
-              <label class="form-check-label" for="exampleCheck1">I agree to the <a href="#">termns and conditions</a></label>
+          <div [hidden]="lastQuoteInstance?.seller_price === null || lastQuoteInstance?.seller_price && lastQuoteInstance?.client_reject === 0">
+            <div class="form-group ivys-input-style">
+              <label>Comment</label>
+              <textarea class="form-control" rows="2" [(ngModel)]="buyerMsg.buyer_msg" name="buyerMsg"></textarea>
             </div>
+            <div class="d-flex justify-content-between">
+              <div class="form-group form-check square-checkbox">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
+                <label class="form-check-label" for="exampleCheck1">I agree to the <a href="#">termns and conditions</a></label>
+              </div>
+  
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || buyerMsg.buyer_msg === ''">Send Message</button>
+            </div>
+          </div> 
+          <div *ngIf="quoteInfo.final_client_aproval === 'Approved'">
+            <div class="alert alert-success" role="alert">
+              This quote is Approved
+            </div>
+          </div>  
+          <div *ngIf="quoteInfo.final_client_aproval !== 'Approved' && lastQuoteInstance?.buyer_msg && lastQuoteInstance?.seller_msg === null">
+            <div class="alert alert-primary" role="alert">
+              Waiting for the seller response
+            </div>
+          </div>   
 
-            <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || buyerMsg.buyer_msg === ''">Send Message</button>
+          <div class="alert alert-primary" role="alert" *ngIf="lastQuoteInstance" [hidden]="lastQuoteInstance?.client_reject === 1 || lastQuoteInstance?.quote_approved === 1 || lastQuoteInstance?.seller_price === null">
+            <h4 class="alert-heading">You have got new quote response</h4>
+            <p>You can approve or reject this quote. If you want to negotiate, reject the quote and re negotiate</p>
           </div>
+
         </div>
       </div>
       <div class="qma-section">
@@ -129,23 +145,39 @@
                       </tr>
                     </tbody>
                     <tfoot>
-                      <td>Total</td>
-                      <td></td>
-                      <td></td>
-                      <td>{{qmsg.seller_price | currency}}</td>
+                      <tr>
+                        <td colspan="3">Direct2Resort Fee</td>                        
+                        <td>{{qmsg.dirrect_to_resort_fee | currency}}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">Re-packing and handling</td>                        
+                        <td>{{qmsg.repacking_handling | currency}}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">Duty*</td>                        
+                        <td>{{qmsg.duty_fee | currency}}</td>
+                      </tr>
+                      <tr>
+                        <td colspan="3">Total</td>
+                        <td>{{qmsg.seller_price + qmsg.owner_margin | currency}}</td>
+                      </tr>
                     </tfoot>
                   </table>
                 </div>
 
                 <p>
-                  10% Duty (Estimated)
                   <small>*Duty, Best Shipping Rates (BSR) & any other related cost will be charged at actual cost with the final invoice.  </small>
                 </p>
                 <br>
                 <h5>Comment</h5>
                 <p>{{qmsg.seller_msg}}</p>
                 <div class="qmas-msg-footer">
-                  <button type="button" class="btn">Approve Quote</button>
+                  <span class="badge badge-danger" *ngIf="qmsg.client_reject === 1">Rejected by You</span>
+                  <span class="badge badge-success" *ngIf="qmsg.quote_approved === 1">Approved</span>
+                  <div class="btn-group" [hidden]="qmsg.quote_approved === 1 || qmsg.client_reject === 1">                    
+                    <button type="button" class="btn btn-danger btn-sm" (click)="rejectQuoteInstance(qmsg)" *ngIf="quoteInfo.final_client_aproval !== 'Rejected'">Reject Quote</button>
+                    <button type="button" class="btn btn-primary btn-sm" (click)="approveQuote(qmsg)" *ngIf="quoteInfo.final_client_aproval !== 'Approved' && quoteInfo.final_client_aproval !== 'Rejected'">Approve Quote</button>
+                  </div>
                 </div>              
               </div>
             </div>

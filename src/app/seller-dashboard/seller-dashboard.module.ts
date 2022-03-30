@@ -25,21 +25,54 @@ import { SellerManageQuotesComponent } from './seller-manage-quotes/seller-manag
 import { SellerQuoteManagementComponent } from './seller-quote-management/seller-quote-management.component';
 import { DataTablesModule } from 'angular-datatables';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { IvysHeaderSearchComponent } from '../components/ivys-header-search/ivys-header-search.component';
+import { SearchHighlight } from '../_helpers/search-highlight.pipe';
+import { ProductSeriesComponent } from './product-series/product-series.component';
+import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ReadyToShipComponent } from './ready-to-ship/ready-to-ship.component';
+import { ReadyToShipManageComponent } from './ready-to-ship-manage/ready-to-ship-manage.component';
+import { EditProductComponent } from './edit-product/edit-product.component';
+import { SharedModule } from '../shared/shared/shared.module';
+import { SubmitedLpListComponent } from './submited-lp-list/submited-lp-list.component';
+import { SubmitedToLpComponent } from './submited-to-lp/submited-to-lp.component';
+import { SellerProductSingleComponent } from './seller-product-single/seller-product-single.component';
+import { SlickCarouselModule } from 'ngx-slick-carousel';
+import {AutocompleteLibModule} from 'angular-ng-autocomplete';
+import { SeriesProductsComponent } from './product-series/series-products/series-products.component';
+import { TooltipModule } from 'ngx-bootstrap/tooltip';
+import { ImageCropperModule } from 'ngx-image-cropper';
+import { SellerSingleRfqComponent } from './seller-manage-quotes/seller-single-rfq/seller-single-rfq.component';
+import { SellerShippingManagerComponent } from './ready-to-ship/seller-shipping-manager/seller-shipping-manager.component';
+import { SellerMessageBoxComponent } from './seller-message-box/seller-message-box.component';
+import { CurrencyMaskModule } from "ng2-currency-mask";
+import { EditSeriesComponent } from './product-series/edit-series/edit-series.component';
+import { ImgCropperComponent } from './product-series/img-cropper/img-cropper.component';
+import {NgxImageCompressService} from 'ngx-image-compress';
+
+ToastDefaults.global.maxAtPosition = 1;
 
 @NgModule({
   declarations: [
     SellerDashboardComponent, 
     SellerDashboardSidebarComponent, 
     ProductListingComponent, 
-    IvysHeaderComponent,
-    IvysHeaderUserProfileComponent,
-    IvysHeaderActionsComponent,
-    IvysProductCardComponent,
     AddProductComponent,
-    IvysRfqModalComponent,
-    IvysHeaderLoginComponent,
     SellerManageQuotesComponent,
-    SellerQuoteManagementComponent
+    SellerQuoteManagementComponent,
+    ProductSeriesComponent,
+    ReadyToShipComponent,
+    ReadyToShipManageComponent,
+    EditProductComponent,
+    SubmitedLpListComponent,
+    SubmitedToLpComponent,
+    SellerProductSingleComponent,
+    SeriesProductsComponent,
+    SellerSingleRfqComponent,
+    SellerShippingManagerComponent,
+    SellerMessageBoxComponent,
+    EditSeriesComponent,
+    ImgCropperComponent
   ],
   imports: [
     CommonModule,
@@ -48,26 +81,28 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
     FormsModule,
     NgxDropzoneModule,
     TabsModule.forRoot(),
+    TooltipModule.forRoot(),
     CKEditorModule,
     Ng2LoadingSpinnerModule.forRoot({
       animationType  : ANIMATION_TYPES.halfCircle
     }),
     PopoverModule.forRoot(),
     DataTablesModule,
-    SnotifyModule
+    SnotifyModule,
+    ModalModule.forRoot(),
+    NgMultiSelectDropDownModule.forRoot(),
+    SharedModule,
+    SlickCarouselModule,
+    NgMultiSelectDropDownModule,
+    AutocompleteLibModule,
+    ImageCropperModule,
+    CurrencyMaskModule
   ],
-  exports: [
-    IvysHeaderComponent,
-    IvysHeaderUserProfileComponent,
-    IvysHeaderActionsComponent,
-    IvysProductCardComponent,
-    IvysRfqModalComponent,
-    IvysHeaderLoginComponent
-  ],
-  entryComponents: [IvysRfqModalComponent],
+  entryComponents: [IvysRfqModalComponent, EditSeriesComponent, ImgCropperComponent],
   providers: [
     { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
-    SnotifyService
+    SnotifyService,
+    NgxImageCompressService
   ]
 })
 export class SellerDashboardModule { }

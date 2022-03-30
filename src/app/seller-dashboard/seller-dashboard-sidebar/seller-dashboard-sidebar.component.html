@@ -1,26 +1,8 @@
 <ul class="sidebar-nav">
-  <li>
-    <div class="nav-item">
-      <div class="nav-icon">        
-        <i class="apicon-dashboard"></i>
-      </div>
-      Dashboard
-    </div>
-  </li>
-
-  <li>
-    <div class="nav-item">
-      <div class="nav-icon">        
-        <i class="apicon-orderHistory"></i>
-      </div>
-      Order History
-    </div>
-  </li>
-
   <li (click)="toggleMenu($event)">
     <div class="nav-item has-sub-menu">
       <div class="nav-icon">        
-        <i class="apicon-products"></i>
+        <img src="assets/images/icons/products.svg"/>
       </div>
       Products
       <div class="sub-menu-toggle">
@@ -29,35 +11,84 @@
     </div>
 
     <ul class="sub-nav">
-      <li routerLink="/seller/product-listing">
-        <div class="nav-item active">
-          <div class="nav-icon">        
-            <i class="apicon-productListing"></i>
+      <li routerLink="/seller/product-listing" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav-item">
+          <div class="nav-icon">     
           </div>
           Product Listing
         </div>
       </li>
-      <li routerLink="/seller/add-product">
+      <li routerLink="/seller/add-product" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
         <div class="nav-item">
-          <div class="nav-icon">        
-            <i class="apicon-productListing"></i>
+          <div class="nav-icon">     
           </div>
           Add Product
+        </div>
+      </li>
+      <li routerLink="/seller/product-series" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav-item">
+          <div class="nav-icon">        
+          </div>
+          Product Series
         </div>
       </li>
     </ul>
   </li>
 
-  <li routerLink="/seller/manage-quotes">
+  <li routerLink="/seller/manage-quotes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
+      <div class="nav-icon">        
+        <img src="assets/images/icons/qoute.svg"/>
+      </div>
+      Manage Quotes
+    </div>
+  </li>
+
+  <!-- <li (click)="toggleMenu($event)">
+    <div class="nav-item has-sub-menu">
       <div class="nav-icon">        
         <i class="apicon-manageRfq"></i>
       </div>
       Manage RFQ
+      <div class="sub-menu-toggle">
+        <i class="apicon-arrow-down"></i>
+      </div>
+    </div>
+
+    <ul class="sub-nav">
+      <li routerLink="/seller/manage-quotes" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav-item">
+          <div class="nav-icon">     
+          </div>
+          Manage RFQ
+        </div>
+      </li>
+       <li routerLink="/seller/ready-to-ship" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav-item">
+          <div class="nav-icon">     
+          </div>
+          Ready to Ship
+        </div>
+      </li>
+      <li routerLink="/seller/lp-submited-list" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+        <div class="nav-item">
+          <div class="nav-icon">        
+          </div>
+          Submited To LP
+        </div>
+      </li>
+    </ul>
+  </li> -->
+  
+  <li routerLink="/seller/message-box" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+    <div class="nav-item">
+      <div class="nav-icon">        
+        <img src="assets/images/icons/messages.svg"/>
+      </div>
+      Messages
     </div>
   </li>
-
-  <li>
+  <!-- <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-messages"></i>
@@ -66,7 +97,7 @@
     </div>
   </li>
 
-  <li>
+  <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-reviewsAndFeedbacks"></i>
@@ -75,7 +106,7 @@
     </div>
   </li>
 
-  <li>
+  <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-statistics"></i>
@@ -84,12 +115,12 @@
     </div>
   </li>
 
-  <li>
+  <li routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
     <div class="nav-item">
       <div class="nav-icon">        
         <i class="apicon-settings"></i>
       </div>
       Settings
     </div>
-  </li>
+  </li> -->
 </ul>

@@ -7,7 +7,19 @@
         height: auto;
         cursor: pointer;
         margin: 0 0 16px 0;
+        &.active {
+            .nav-item {
+                color: #325bff;
 
+                .nav-icon {
+                    background-color: #325bff;
+                    
+                    img {
+                        filter: brightness(2);
+                    }
+                }
+            }            
+        }
         .nav-item {
             color: #3a5a68;
             font-size: 14px;
@@ -15,14 +27,6 @@
             display: flex;
             align-items: center;
             position: relative;
-            &.active {
-                color: #325bff;
-
-                .nav-icon {
-                    background-color: #325bff;
-                    color: #ffffff;
-                }
-            }
 
             .nav-icon {
                 width: 42px;
@@ -32,7 +36,10 @@
                 box-shadow: 0 0 7.3px 0 rgba(34, 60, 71, 0.1);
                 border-radius: 9px;
                 margin-right: 20px;
-                font-size: 26px;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
             }
 
             .sub-menu-toggle {
@@ -68,6 +75,13 @@
                 max-height: 500px !important;
             }
 
+            .nav-item {
+                .nav-icon {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+            
             li {
                 padding-left: 40px;
                 &:first-child {

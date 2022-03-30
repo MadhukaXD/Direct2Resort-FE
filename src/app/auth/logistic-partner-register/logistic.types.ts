@@ -1,13 +1,13 @@
-export interface RegisterData {
+export interface LpData {
     company_name: string;
-    company_email: string;
-    company_website: string;
     company_street_address: string;
     company_state: string;
     company_zip_code: string;
     company_city: string;
     company_country: string;
     company_tp: string;
+    company_vat_gst: string;
+    company_ci_doc: string;
 
     gen_p_full_name: string;
     gen_p_email: string;

@@ -1,0 +1,52 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>{{refInfo?.product_series_name}}</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+         
+        </div>
+      </div>
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="series-banner">
+          <div class="sb-img mb-2" *ngIf="refInfo?.product_series_banner">
+            <img [src]="refInfo.product_series_banner"/>
+          </div>
+          <div class="sb-desc">
+            <p>{{refInfo?.product_series_desc}}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <table class="table table-ivys" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+          <thead>
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Category</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let product of productList">
+            <td width="40px">
+              <div class="tbl-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
+            </td>
+            <td>{{product.product_name}}</td>
+            <td>{{product.product_cat_name}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>    
+  </div>
+</div>
+

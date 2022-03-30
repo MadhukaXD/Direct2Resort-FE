@@ -7,7 +7,7 @@
             color: #3a5a68;
             margin: 0;
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 400;
         }
   
         .btn {
@@ -19,7 +19,7 @@
             padding: 40px 40px 10px 40px;
 
             .header-action-bar {
-                padding-top: 8px;
+                padding-top: 18px;
 
                 .filter-btns-holder {
                     display: flex;
@@ -83,4 +83,21 @@
     .page-content {
         padding: 20px 40px 10px 40px;
     }
+}
+
+@media only screen and (max-width: 767px) {
+    .page-holder {
+        .page-header {
+            height: auto !important;
+        }
+
+        .filter-btns-holder {
+            flex-wrap: wrap;
+    
+            .filter-btn {
+                margin-bottom: 10px;
+            }
+        }
+    }
+    
 }

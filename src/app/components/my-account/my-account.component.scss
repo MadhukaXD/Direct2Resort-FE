@@ -1,0 +1,30 @@
+.page-holder {
+    .page-header {
+        background-color: #c7cfd3;
+        height: 155px;
+
+        h2 {
+            color: #3a5a68;
+            margin: 0;
+            font-size: 22px;
+            font-weight: 400;
+        }
+  
+        .btn {
+            color: #707a80;
+            font-size: 22px;
+        }
+
+        .page-header-inner {
+            padding: 40px 40px 10px 40px;
+
+            .header-action-bar {
+                padding-top: 18px;
+            }
+        }
+    }
+
+    .page-content {
+        padding: 20px 40px 10px 40px;
+    }
+}

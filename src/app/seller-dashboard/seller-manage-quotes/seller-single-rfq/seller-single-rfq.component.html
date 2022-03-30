@@ -1,0 +1,332 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Manage Quotes</h2>
+            <span class="badge mr-1" *ngIf="mainQuote && mainQuote?.submited_to_freight === 0 && mainQuote?.seller_close_quote !== 1 && mainQuote?.final_client_aproval !== 'Close'" [ngClass]="{'badge-warning':mainQuote?.final_client_aproval === 'Pending', 
+            'badge-success':mainQuote?.final_client_aproval === 'Aproved', 
+            'badge-danger':mainQuote?.final_client_aproval === 'Rejected'}">
+              {{mainQuote?.final_client_aproval}}
+            </span>
+            <span class="badge mr-1" *ngIf="mainQuote?.ready_to_ship === 1 && mainQuote?.buyer_apporved_frieght_method === null" [ngClass]="{'badge-primary':mainQuote?.ready_to_ship === 1}">
+              Ready to Ship
+            </span>
+            <!-- <span class="badge mr-1 badge-info" *ngIf="mainQuote?.ready_to_ship === 1 && mainQuote?.submited_to_freight === 1 && mainQuote?.buyer_apporved_frieght_method === null">
+              Submitted to LP
+            </span> -->
+            <span class="badge mr-1 badge-danger" *ngIf="mainQuote?.seller_close_quote === 1">
+              Closed By You
+            </span>
+            <span class="badge mr-1 badge-danger" *ngIf="mainQuote?.final_client_aproval === 'Close'">
+              Closed By Buyer
+            </span> 
+            <span class="badge mr-1 badge-success" *ngIf="mainQuote?.buyer_apporved_frieght_method === 'Air' || mainQuote?.buyer_apporved_frieght_method === 'Sea'">
+              Buyer Confirmed
+            </span>
+            
+        </div>
+    
+        <div class="col-md-6 text-right">
+          <button type="button" class="btn btn-sm btn-danger" *ngIf="mainQuote?.final_client_aproval === 'Pending' && mainQuote?.seller_close_quote === 0" (click)="closeQuote(mainQuote)">Close Quote</button>
+          <button *ngIf="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship !== 1" type="button" class="btn btn-sm btn-primary" (click)="markAsReadyToShip()">Ready to Ship</button>
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item">
+                <small>Quote ID</small>
+                <h2>{{lastQuoteInstance?.quote_uuid}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Created Date</small>
+                <h2>{{mainQuote?.created_date | date: 'M/d/yy hh:mm a'}}</h2>
+              </div>
+              <!-- <div class="quote-info-item">
+                <small>Lsat Update On</small>
+                <h2>02/02/2020 10.30PM</h2>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote Submition</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item table-responsive">   
+            <table *ngIf="mainQuote">
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td>QTY</td>
+                <td>Unit Price</td>
+                <td>Amount</td>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of quote?.products">
+                  <td>
+                    <div class="qpi-img" [ngStyle]="getProductImg(product.product_imgs)"></div>
+                  </td>
+                  <td>
+                    <h5 class="qpi-name">{{product.product_name}}</h5>
+                  </td>
+                  <td>
+                    <h5 class="qpi-qty">
+                      {{product.qty}}
+                    </h5>
+                  </td>
+                  <td>
+                    <div class="input-group input-group-sm float-right unit-price-group">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text">$</span>
+                      </div>
+                      <input type="number" class="form-control qpi-price text-right" name="unitPrice" (keyup)="calcTotalProductAmount(product, $event.target.value)" 
+                      value="{{product.unit_price}}">                      
+                    </div>
+                  </td>
+                  <td>
+                    <h5 class="qpi-qty">
+                      {{product?.amount | currency}}
+                    </h5>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <table class="markup-tbl" *ngIf="mainQuote">
+            <tbody>
+              <tr>
+                <td><strong>Total</strong></td>
+                <td class="text-right">
+                  <strong>{{quote?.total | currency}}</strong>
+                </td>
+              </tr>
+
+              <tr>
+                <td>
+                  Production Lead Time
+                </td>
+                <td class="text-right">
+                  <div class="input-group input-group-sm lead-time float-right">
+                    <input type="text" [(ngModel)]="quote.manufacture_leadtime" class="form-control" name="leadTime">
+                    <div class="input-group-append">
+                      <span class="input-group-text" id="basic-addon2">Days</span>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval !== 'Aproved' && mainQuote?.seller_close_quote === 0 && mainQuote?.final_client_aproval !== 'Close'">
+          <div class="form-group ivys-input-style">
+            <label>Quote Remark</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="quote.quoteRemark" name="quoteRemark"></textarea>
+          </div>
+          <div class="d-flex justify-content-between">
+            <div class="form-group form-check square-checkbox">
+              <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
+              <label class="form-check-label" for="exampleCheck1">
+                <app-ivys-lpg-agreement></app-ivys-lpg-agreement>
+              </label>
+            </div>
+
+            <button type="button" class="quote-msg-send-btn" (click)="submitQuote()" [disabled]="!agreeToTerms || quote.quoteRemark === '' || quote.manufacture_leadtime < 1">Submit Quote</button>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.seller_close_quote === 1">
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Quote Closed</h4>
+            <p>This quote has been closed by you. You cannot update or contiune this quote.</p>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Close'">
+          <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Closed By Buyer</h4>
+            <p>This quote has been closed by the Buyer. You cannot update or contiune this quote.</p>
+          </div>
+        </div>
+        
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship !== 1">
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Congratulations!</h4>
+            <p>Your quote is approved by the buyer. An agent from Direct2resort will send you an official PO soon to process the order</p>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship === 1 && mainQuote?.submited_to_freight === 0">
+          <div class="alert alert-primary" role="alert">
+            <h4 class="alert-heading">Marked as Ready to Ship</h4>
+            <p>This quote marked as 'Ready to Ship' Please update the quote in ready to ship section</p>
+          </div>
+        </div>
+        
+        <div class="qmas-footer" *ngIf="mainQuote?.final_client_aproval === 'Aproved' && mainQuote?.ready_to_ship === 1 && mainQuote?.submited_to_freight === 1 && mainQuote?.buyer_apporved_frieght_method === null">
+          <div class="alert alert-primary" role="alert">
+            <h4 class="alert-heading">Submitted to LP</h4>
+            <p>This quote is submitted to the Logistic Partner.</p>
+            <button type="button" class="btn btn-outline-primary btn-sm" [routerLink]="['/seller/shipping-manager', mainQuote?.quote_uuid]">LP Submition</button>
+          </div>
+        </div>
+
+        <div class="qmas-footer" *ngIf="mainQuote?.buyer_apporved_frieght_method === 'Air' || mainQuote?.buyer_apporved_frieght_method === 'Sea'">
+          <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Buye Confirmed</h4>
+            <p>Buyer confirmed the order</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Discussion Feed</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-msg-list-holder" #scrollMsgFeed>
+            <div *ngFor="let qInstance of fullQuoteInstance">
+              <div *ngFor="let msg of qInstance.tmpMsg">
+                <div class="qmas-msg-item" *ngIf="msg.msgType === 'textMsg'" [ngClass]="{'my-msg': msg.user_category === 1, 'client-msg': msg.user_category === 2}">
+                  <div class="qmas-msg-body">
+                    <!-- <div class="msg-approved-icon" *ngIf="quoteMsg.quote_admin_status === 'Approved' || quoteMsg.quote_admin_status === 'To Buyer'">
+                      <i class="fas fa-check-circle"></i> Admin Approved
+                    </div> -->
+                    <h6 class="msg-date-time">
+                      {{msg?.created_date | date: 'medium'}} by 
+                      <span *ngIf="msg.user_category === 1">Buyer</span>
+                      <span *ngIf="msg.user_category === 2">Me</span>
+                    </h6>
+                    <h5>Comment</h5>
+                    <p>
+                      {{msg?.message_body}}
+                    </p>
+                    
+                    <div class="qmas-msg-footer" *ngIf="msg.approval === 'Rejected'">
+                      <span class="badge badge-pill badge-danger mt-1">Admin Rejected</span>  
+                      <div class="alert alert-danger mt-2" role="alert" *ngIf="msg.admin_reject_msg">
+                        <strong>Admin Reject Message: </strong> <br>
+                        {{msg.admin_reject_msg}}                                           
+                      </div>
+                    </div>                                
+                  </div>                
+                </div>
+
+                <div class="qmas-msg-item client-msg" *ngIf="msg.msgType === 'quoteTpl'">
+                  <div class="qmas-msg-body">
+                    <h6 class="msg-date-time">
+                      {{qInstance?.created_date | date: 'medium'}} by Me
+                    </h6>
+                    <h4 class="quote-id">Quotation ID #{{qInstance?.series_instance_id}}</h4>
+                    <div>
+                      <div class="seller-quote-template">
+                        <table>
+                          <thead>
+                            <td>Item</td>
+                            <td>QTY</td>
+                            <td>Unit Price($)</td>
+                            <td>Amount</td>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let product of msg.pricingProducts">
+                              <td>
+                                <div tooltip="{{product.product_name}}">{{product.product_name}}</div>
+                              </td>
+                              <td>{{product.quantity}}</td>
+                              <td>{{product?.pricing[0]?.seller_unit_price | currency}}</td>
+                              <td>{{product?.pricing[0]?.seller_price | currency}}</td>
+                            </tr>
+                          </tbody>
+                          
+                          <tfoot>   
+                            <tr>
+                              <td colspan="3">Total</td>
+                              <td>{{msg.product_items_amount | currency}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="3">Direct2resort fee</td>
+                              <td>{{msg.dirrect_to_resort_fee | currency}}</td>
+                            </tr>
+                            <tr>
+                              <td colspan="3">Re-packing and handling</td>                        
+                              <td>{{msg.repacking_handling | currency}}</td>
+                            </tr>  
+
+                            <tr>
+                              <td colspan="3">Grand Total (Without Duty)</td>
+                              <td>{{msg.quote_total | currency}}</td>
+                            </tr>
+                                                        
+                            <tr>
+                              <td colspan="3">Duty (Estimated)</td>
+                              <td>{{msg.duty_fee | currency}}</td>
+                            </tr>                            
+
+                            <tr *ngIf="msg?.manufacture_leadtime">
+                              <td colspan="3">Production Lead Time</td>
+                              <td>{{msg?.manufacture_leadtime}} Days</td>
+                            </tr>  
+                            
+                            <tr>
+                              <td colspan="4">
+                                <p class="special-note">*Duty, Best Shipping Rates (BSR) & any other related cost will be charged at actual cost with the final invoice.  </p>
+                              </td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                      </div> 
+                      <hr/>
+                      <h5>Quote Remark</h5>
+                      <p>
+                        {{msg?.quoteComment?.message_body}}
+                      </p>           
+                    </div>
+                    <div class="qmas-msg-footer mt-2">
+                      <div *ngIf="qInstance.quote_admin_status === 'Rejected' || qInstance.quote_admin_status === 'Buyer Rejected'" class="alert alert-danger" role="alert">
+                        <strong>Rejected by <span *ngIf="qInstance.buyer_reject === 1">Buyer</span> <span *ngIf="qInstance.buyer_reject === 0">Admin</span>: </strong> <br> 
+                        {{qInstance.admin_rejected_msg}}
+                      </div>
+                      <span class="badge badge-success" *ngIf="qInstance.quote_approved === 1">
+                        This quote has been accepted by the Buyer 
+                      </span>
+                      <span class="badge badge-warning" *ngIf="qInstance.quote_admin_status != 'Rejected' && qInstance.quote_approved === 0 && qInstance.buyer_reject === 0">
+                        Waiting for the buyer response
+                      </span>
+                    </div>                
+                  </div>
+                </div>
+              </div>              
+            </div>
+          </div>
+        </div> 
+        
+        <div class="qmas-footer" *ngIf="mainQuote?.ready_to_ship === 0 && mainQuote?.seller_close_quote === 0 && mainQuote?.final_client_aproval !== 'Close'">
+          <div class="form-group ivys-input-style">
+            <label>Message</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="discussionMsg.quoteMessage" name="discussionMsg"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="discussionMsg.quoteMessage === ''">Send Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

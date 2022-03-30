@@ -31,7 +31,7 @@ export class SellerQuoteManagementService {
   }
 
   getQuoteInstanceDetails(quoteId: number) {
-    return this.http.get(`${environment.apiPath}/quote/getQuoteInstanceDetails/${quoteId}`).pipe(
+    return this.http.get(`${environment.apiPath}/quote/getQuoteInstanceDetailsSeller/${quoteId}`).pipe(
       map((data:any) => {
         return data.data;
       })
@@ -49,6 +49,14 @@ export class SellerQuoteManagementService {
 
   sendMsgToSeller(msgObj) {
     return this.http.put(`${environment.apiPath}/quote/sellerSendOffer`, msgObj).pipe(
+      map((data:any) => {
+        return data;
+      })
+    )
+  }
+
+  updateReadyToShipStatus(quoteId) {
+    return this.http.put(`${environment.apiPath}/seller/updateReadyToShipStatus/${quoteId}`, {}).pipe(
       map((data:any) => {
         return data;
       })

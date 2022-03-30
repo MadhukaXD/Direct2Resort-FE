@@ -1,0 +1,254 @@
+<app-ivys-header></app-ivys-header>
+<div class="row no-gutters login-container">
+  <div class="offset-md-3 col-md-6">
+    <div class="right-side">
+     
+      <h3>Buyer Sign up</h3>
+
+      <div class="wizard-holder" [ng2-loading]="isLoading">
+        <form-wizard>
+          <wizard-step [title]="'Company Details'" [isValid]="cf.form.valid && isValidImg">
+            <div class="wizard-inner">
+              <form #cf="ngForm">
+                <div class="company-form">
+                  <div class="form-group ivys-input-style">
+                    <label>Company Name</label>
+                    <input type="text" [(ngModel)]="sellerData.company_name" class="form-control" name="companyName" 
+                    #companyName="ngModel" [ngClass]="{ 'is-invalid': companyName.touched && companyName.invalid }" required>
+                    <div *ngIf="companyName.touched && companyName.invalid" class="invalid-feedback">
+                      <div *ngIf="companyName.errors.required">This is a required field</div>
+                    </div>
+                  </div>
+                  
+
+                  
+                  <div class="form-group ivys-input-style">
+                    <label>VAT/GST Number</label>
+                    <input type="text" [(ngModel)]="sellerData.company_vat_gst" class="form-control" name="vatGst"
+                    #vatGst="ngModel" [ngClass]="{ 'is-invalid': vatGst.touched && vatGst.invalid }" required>
+                    <div *ngIf="vatGst.touched && vatGst.invalid" class="invalid-feedback">
+                      <div *ngIf="vatGst.errors.required">This is a required field</div>
+                    </div>
+                  </div>
+  
+                  <div class="form-group ivys-input-style">
+                    <label>Telephone</label>
+                    <input type="text" [(ngModel)]="sellerData.company_tp" class="form-control" name="telephoneNo"
+                    #telephoneNo="ngModel" [ngClass]="{ 'is-invalid': telephoneNo.touched && telephoneNo.invalid }" required>
+                    <div *ngIf="telephoneNo.touched && telephoneNo.invalid" class="invalid-feedback">
+                      <div *ngIf="telephoneNo.errors.required">This is a required field</div>
+                    </div>
+                  </div>
+  
+                  <div class="form-group ivys-input-style">
+                    <label>Street</label>
+                    <input type="text" [(ngModel)]="sellerData.company_street_address" class="form-control" name="street"
+                    #street="ngModel" [ngClass]="{ 'is-invalid': street.touched && street.invalid }" required>
+                    <div *ngIf="street.touched && street.invalid" class="invalid-feedback">
+                      <div *ngIf="street.errors.required">This is a required field</div>
+                    </div>
+                  </div>
+  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>City</label>
+                        <input type="text" [(ngModel)]="sellerData.company_city" class="form-control" name="city"
+                        #city="ngModel" [ngClass]="{ 'is-invalid': city.touched && city.invalid }" required>
+                        <div *ngIf="city.touched && city.invalid" class="invalid-feedback">
+                          <div *ngIf="city.errors.required">This is a required field</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>State/Province/Region</label>
+                        <input type="text" [(ngModel)]="sellerData.company_state" class="form-control" name="state"
+                        #state="ngModel" [ngClass]="{ 'is-invalid': state.touched && state.invalid }" required>
+                        <div *ngIf="state.touched && state.invalid" class="invalid-feedback">
+                          <div *ngIf="state.errors.required">This is a required field</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>Zip / Postal Code</label>
+                        <input type="text" [(ngModel)]="sellerData.company_zip_code" class="form-control" name="zipPostalCode"
+                        #zipPostalCode="ngModel" [ngClass]="{ 'is-invalid': zipPostalCode.touched && zipPostalCode.invalid }" required>
+                        <div *ngIf="zipPostalCode.touched && zipPostalCode.invalid" class="invalid-feedback">
+                          <div *ngIf="zipPostalCode.errors.required">This is a required field</div>
+                        </div>
+                      </div>
+                    </div>                 
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>Country</label>
+                        <select class="form-control" [(ngModel)]="sellerData.company_country" name="country"
+                        #country="ngModel" [ngClass]="{ 'is-invalid': country.touched && country.invalid }" required>
+                          <option value="">Select</option>
+                          <option [value]="country.code" *ngFor="let country of countryList">{{country.name}}</option>
+                        </select>
+                        <div *ngIf="country.touched && country.invalid" class="invalid-feedback">
+                          <div *ngIf="country.errors.required">This is a required field</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <label for="exampleFormControlFile1">Upload CI ( Certificate of Incorporation)</label>
+                        <input type="file" class="form-control-file" name="ciUpload" required [(ngModel)]="ciDoc"
+                        #ciUpload="ngModel" [ngClass]="{ 'is-invalid': ciUpload.touched && ciUpload.invalid || ciUpload.touched && !isValidImg}"
+                        (change)="onFileChanged($event)">
+                        <div *ngIf="ciUpload.touched && ciUpload.invalid" class="invalid-feedback">
+                          <div *ngIf="ciUpload.errors.required">This is a required field</div>
+                        </div>
+                        <div *ngIf="!isValidImg" class="invalid-feedback">
+                          <div>Please upload only an image file</div>
+                        </div>
+                        
+                      </div>
+                    </div>                    
+                  </div>
+                </div>
+              </form>                            
+            </div>
+          </wizard-step>  
+          
+          <wizard-step [title]="'Shipping Address'" [isValid]="sf.form.valid">
+            <div class="wizard-inner">
+              <form #sf="ngForm">
+                <div class="form-group ivys-input-style">
+                  <label>Street</label>
+                  <input type="text" [(ngModel)]="sellerData.shipping_street" class="form-control" name="shippingStreet"
+                  #shippingStreet="ngModel" [ngClass]="{ 'is-invalid': shippingStreet.touched && shippingStreet.invalid }" required>
+                  <div *ngIf="shippingStreet.touched && shippingStreet.invalid" class="invalid-feedback">
+                    <div *ngIf="shippingStreet.errors.required">This is a required field</div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>City</label>
+                      <input type="text" [(ngModel)]="sellerData.shipping_city" class="form-control" name="shippingCity"
+                      #shippingCity="ngModel" [ngClass]="{ 'is-invalid': shippingCity.touched && shippingCity.invalid }" required>
+                      <div *ngIf="shippingCity.touched && shippingCity.invalid" class="invalid-feedback">
+                        <div *ngIf="shippingCity.errors.required">This is a required field</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>State/Province/Region</label>
+                      <input type="text" [(ngModel)]="sellerData.shipping_state" class="form-control" name="shippingState"
+                      #shippingState="ngModel" [ngClass]="{ 'is-invalid': shippingState.touched && shippingState.invalid }" required>
+                      <div *ngIf="shippingState.touched && shippingState.invalid" class="invalid-feedback">
+                        <div *ngIf="shippingState.errors.required">This is a required field</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Zip / Postal Code</label>
+                      <input type="text" [(ngModel)]="sellerData.shipping_zip_code" class="form-control" name="shippingZipCode"
+                      #shippingZipCode="ngModel" [ngClass]="{ 'is-invalid': shippingZipCode.touched && shippingZipCode.invalid }" required>
+                      <div *ngIf="shippingZipCode.touched && shippingZipCode.invalid" class="invalid-feedback">
+                        <div *ngIf="shippingZipCode.errors.required">This is a required field</div>
+                      </div>
+                    </div>
+                  </div>                 
+                  <div class="col-md-6">
+                    <div class="form-group ivys-input-style">
+                      <label>Country</label>
+                      <select class="form-control" [(ngModel)]="sellerData.shipping_country" name="shippingCountry"
+                      #shippingCountry="ngModel" [ngClass]="{ 'is-invalid': shippingCountry.touched && shippingCountry.invalid }" required>
+                        <option value="">Select</option>
+                        <option [value]="country.code" *ngFor="let country of countryList">{{country.name}}</option>
+                      </select>
+                      <div *ngIf="shippingCountry.touched && shippingCountry.invalid" class="invalid-feedback">
+                        <div *ngIf="shippingCountry.errors.required">This is a required field</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>                
+            </div>
+        </wizard-step>
+
+          <wizard-step [title]="'User Details'" [isValid]="uf.form.valid && !isEmailExisting" (onComplete)="wonComplete($event)">
+            <form #uf="ngForm">
+              <div class="wizard-inner" [ngSwitch]="registrationSuccess">    
+                <div *ngSwitchDefault>
+                  <div class="form-group ivys-input-style">
+                    <label>Full Name</label>
+                    <input type="text"  [(ngModel)]="sellerData.gen_p_full_name" class="form-control" name="userFullName"
+                    #userFullName="ngModel" [ngClass]="{ 'is-invalid': userFullName.touched && userFullName.invalid }" required>
+                    <div *ngIf="userFullName.touched && userFullName.invalid" class="invalid-feedback">
+                      <div *ngIf="userFullName.errors.required">This is a required field</div>
+                    </div>
+                  </div>
+                  <div class="form-group ivys-input-style">
+                    <label>Official Email</label>
+                    <input type="text" [(ngModel)]="sellerData.gen_p_email" class="form-control" name="userEmail" 
+                    #userEmail="ngModel" [ngClass]="{ 'is-invalid': userEmail.touched && userEmail.invalid || isEmailExisting}" required 
+                    pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" (keyup)="checkEmailAdress($event.target.value)">
+                    <div *ngIf="userEmail.touched && userEmail.invalid" class="invalid-feedback">
+                      <div *ngIf="userEmail.errors.required">This is a required field</div>
+                      <div *ngIf="userEmail.errors.pattern">Please enter valid email</div>                   
+                    </div>
+                    <div *ngIf="userEmail.touched && isEmailExisting" class="invalid-feedback">
+                      <div *ngIf="isEmailExisting">This is email is already used</div>              
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>Password</label>
+                        <input type="password" [(ngModel)]="sellerData.password" class="form-control" name="password" 
+                        #password="ngModel" [ngClass]="{ 'is-invalid': password.touched && password.invalid }" minlength="8" required>
+                        <div *ngIf="password.touched && password.invalid" class="invalid-feedback">
+                          <div *ngIf="password.errors.required">This is a required field</div>
+                          <div *ngIf="password.errors.minlength">Password must be at least 8 characters</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group ivys-input-style">
+                        <label>Confirm Password</label>
+                        <input type="password" pwConfirm="password" class="form-control" name="confirmPassword" [(ngModel)]="sellerData.confirmPw"                 
+                        #confirmPassword="ngModel" [ngClass]="{ 'is-invalid': confirmPassword.touched && confirmPassword.invalid }" required>
+                        <div *ngIf="confirmPassword.touched && confirmPassword.invalid" class="invalid-feedback">
+                          <div *ngIf="confirmPassword.errors.required">This is a required field</div>
+                          <div *ngIf="confirmPassword.errors.pwConfirm">Password mismatch</div>                          
+                        </div>
+                      </div>
+                    </div>
+                  </div> 
+                </div> 
+                
+                <div *ngSwitchCase="1">
+                  <div class="alert alert-success" role="alert">
+                    <h4 class="alert-heading">Registration success!</h4>
+                    <p>We have sent you and verification email to your email address. Please verify it before you login</p>
+                    <hr>
+                    <button type="button" [routerLink]="['/login']" class="btn btn-outline-primary btn-sm">Login</button>
+                  </div>
+                </div>
+                <div *ngSwitchCase="2">
+                  <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading">Registration Failed!</h4>
+                    <p>Something went wrong. Please try again</p>
+                    <hr>
+                    <button type="button" [routerLink]="['/register']" class="btn btn-outline-primary btn-sm">Register</button>
+                  </div>
+                </div>
+              </div>
+            </form> 
+          </wizard-step>
+        </form-wizard>
+      </div>
+    </div>     
+  </div>
+</div>

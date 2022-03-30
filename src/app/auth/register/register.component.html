@@ -1,156 +1,24 @@
+<app-ivys-header></app-ivys-header>
 <div class="row no-gutters login-container">
-  <div class="col-md-6">
+  <div class="col-md-12">
    <div class="left-side">
+    
     <p>It's never been so easy to match <b>perfect products</b> together </p>
     <h3>Select Your Role</h3>
     
     <div class="role-list">
-      <div class="role-item">
+      <div class="role-item" [routerLink]="['/buyer-register']">
         <img src="../../../assets/images/buyer.png"/>
         <h5>Im a buyer</h5>
         <p>Lorem ipsum dolor sit amet, consec</p>
       </div>
 
-      <div class="role-item">
+      <div class="role-item" [routerLink]="['/seller-register']">
         <img src="../../../assets/images/seller.png"/>
         <h5>Im a seller</h5>
         <p>Lorem ipsum dolor sit amet, consec</p>
       </div>
-
-      <div class="role-item">
-        <img src="../../../assets/images/logistic-partner.png"/>
-        <h5>Im a Logistic Partner</h5>
-        <p>Lorem ipsum dolor sit amet, consec</p>
-      </div>
-    </div>
-
-    <div class="accept-agreement">
-      <div class="form-group form-check square-checkbox">
-        <input type="checkbox" class="form-check-input" id="exampleCheck1">
-        <label class="form-check-label" for="exampleCheck1">Check me out</label>
-      </div>
     </div>
    </div>
-  </div>
-
-  <div class="col-md-6">
-    <div class="right-side" [ng2-loading]="isLoading">
-      <div class="logo-holder">
-        <img src="../../../assets/images/logo.png" alt="login-logo"> 
-      </div>
-      
-      <h3>Sign up</h3>
-
-      <div class="wizard-holder">
-        <form-wizard>
-          <wizard-step [title]="'Company Details'"  (onNext)="onStep1Next($event)">
-            <div class="wizard-inner">
-              <p>Lorem ipsum dolor sit amet, consec</p>
-              <div class="form-group ivys-input-style">
-                <label>Company Name</label>
-                <input type="text" [(ngModel)]="registerData.company_name" class="form-control" name="companyName">
-              </div>
-              <div class="form-group ivys-input-style">
-                <label>Company Email</label>
-                <input type="text" [(ngModel)]="registerData.company_email" class="form-control" name="companyEmail">
-              </div>
-              
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>Company Website</label>
-                    <input type="text" [(ngModel)]="registerData.company_website" class="form-control" name="companyWebsite">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>Company Telephone</label>
-                    <input type="text" [(ngModel)]="registerData.company_tp" class="form-control" name="companyTelephone">
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group ivys-input-style">
-                <label>Street</label>
-                <input type="text" [(ngModel)]="registerData.company_street_address" class="form-control" name="street">
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>State</label>
-                    <input type="text" [(ngModel)]="registerData.company_state" class="form-control" name="state">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>Zip / Postal Code</label>
-                    <input type="text" [(ngModel)]="registerData.company_zip_code" class="form-control" name="zipPostalCode">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>City</label>
-                    <input type="text" [(ngModel)]="registerData.company_city" class="form-control" name="city">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group ivys-input-style">
-                    <label>Country</label>
-                    <select class="form-control" [(ngModel)]="registerData.company_country">
-                      <option value="LK">Sri Lanka</option>
-                      <option value="USA">United States</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </wizard-step>  
-          
-          <wizard-step [title]="'User Details'" (onComplete)="wonComplete($event)">
-            <div [ngSwitch]="isCompleted">
-              <div class="wizard-inner" *ngSwitchDefault>
-                <p>Lorem ipsum dolor sit amet, consec</p>
-                <div class="form-group ivys-input-style">
-                  <label>Full Name</label>
-                  <input type="text"  [(ngModel)]="registerData.gen_p_full_name" class="form-control" name="userFullName">
-                </div>
-                <div class="form-group ivys-input-style">
-                  <label>User Email</label>
-                  <input type="text" [(ngModel)]="registerData.gen_p_email" class="form-control" name="userEmail">
-                </div>
-                
-                <div class="row">
-                  <div class="col-md-6">
-                    <div class="form-group ivys-input-style">
-                      <label>Password</label>
-                      <input type="password" [(ngModel)]="registerData.password" class="form-control" name="password">
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group ivys-input-style">
-                      <label>Confirm Password</label>
-                      <input type="password" class="form-control" name="confirmPassword">
-                    </div>
-                  </div>
-                </div>
-  
-                <div class="form-group ivys-input-style">
-                  <label>User Type</label>
-                  <select class="form-control" [(ngModel)]="registerData.UserCategory_user_category_id">
-                    <option value="1">Buyer</option>
-                    <option value="2">Seller</option>
-                    <option value="3">Logistic Partner</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="wizard-inner" *ngSwitchCase="true">
-                <h2>Done</h2>
-              </div>
-            </div>
-          </wizard-step>
-        </form-wizard>
-      </div>
-    </div>     
   </div>
 </div>

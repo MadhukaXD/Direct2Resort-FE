@@ -1,0 +1,265 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Ready to Ship / Submited to Logistic Partner</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+         
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-12">
+            <div class="header-quote-info-holder">
+              <div class="quote-info-item">
+                <small>Quotation ID</small>
+                <h2>{{quoteInfo?.quote_id}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Client Code</small>
+                <h2>{{quoteInfo.buyer_id}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Quote Created Date</small>
+                <h2>{{quoteInfo.created_date | date: 'M/d/yy'}}</h2>
+              </div>
+              <div class="quote-info-item">
+                <small>Quote Lsat Update On</small>
+                <h2>{{quoteInfo.last_updated_date | date: 'M/d/yy'}}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="quote-managment-panel">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote Information</h4>
+        </div>
+
+        <div class="qmas-body">
+          <div class="qmas-quote-product-item">   
+            <table>
+              <thead>
+                <td width="42px">Item</td>
+                <td></td>
+                <td class="text-left">
+                  Freight Method
+                </td>
+                <td>QTY</td>
+              </thead>
+              <tbody>
+                <td>
+                  <div class="qpi-img" [ngStyle]="{'background-image': 'url('+imgUploadPath+'/'+quoteProduct.product_single_img+')'}"></div>
+                </td>
+                <td>
+                  <h5 class="qpi-name">{{quoteProduct.product_name}}</h5>
+                </td>
+                <td>
+                  <h5 class="qpi-name">Sea</h5>
+                </td>
+                <td>
+                  <h5 class="qpi-qty">
+                    {{quoteProduct.quantity}}
+                  </h5>
+                </td>
+              </tbody>
+            </table>
+
+            <!-- <h5 class="qpi-qty">
+              <small>Quantity</small> <br>
+              {{quoteProduct.quantity}}
+            </h5>
+            <div class="form-group ivys-input-style">
+              <label>Price - USD</label>
+              <input type="text" class="form-control qpi-price" name="">
+            </div> -->
+          </div>
+        </div>
+
+        <div class="qmas-footer">
+          <!-- <div *ngIf="!lastQuoteInstance.seller_msg_time && lastQuoteInstance.buyer_msg">
+            <div class="form-group ivys-input-style">
+              <label>Comment</label>
+              <textarea class="form-control" rows="2" [(ngModel)]="sellerMsg.seller_msg" name="sellerMsg"></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+              <div class="form-group form-check square-checkbox">
+                <input type="checkbox" class="form-check-input" [(ngModel)]="agreeToTerms" name="agreement">
+                <label class="form-check-label" for="exampleCheck1">I agree to the <a href="#">termns and conditions</a></label>
+              </div>
+  
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg()" [disabled]="!agreeToTerms || sellerMsg.seller_msg === ''">Submit Quote</button>
+            </div>
+          </div>   
+          <div *ngIf="quoteInfo.final_client_aproval === 'Approved'">
+            <div class="alert alert-success" role="alert">
+              This quote has been approved by Buyer
+            </div>
+            <button type="button" class="btn btn-primary" (click)="readyToShip()">
+              <i class="fas fa-shipping-fast"></i>
+              Rady to Ship
+            </button>
+          </div>
+          <div *ngIf="quoteInfo.final_client_aproval !== 'Approved' && lastQuoteInstance.seller_msg_time">
+            <div class="alert alert-primary" role="alert">
+              Waiting for the buyer response
+            </div>
+          </div>       -->
+        </div>
+      </div>
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Quote History</h4>
+          <button class="qmas-btn">Download as PDF</button>
+        </div>
+        
+        <div class="package-selector-holder">
+          <form name="form" (ngSubmit)="f.form.valid && sendToFrieghtPartner()" #f="ngForm" novalidate>           
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group ivys-input-style">
+                  <label>Origin</label>
+                  <input type="text" class="form-control" [(ngModel)]="shippingData.origin" name="origin"
+                  #origin="ngModel" [ngClass]="{ 'is-invalid': f.submitted && origin.invalid }" required>
+                  <div *ngIf="f.submitted && origin.invalid" class="invalid-feedback">
+                    <div *ngIf="origin.errors.required">Please select an origin</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group ivys-input-style">
+                  <label>Destination</label>
+                  <input type="text" class="form-control" [(ngModel)]="shippingData.destination" name="destination"
+                  #destination="ngModel" [ngClass]="{ 'is-invalid': f.submitted && destination.invalid }" required>
+                  <div *ngIf="f.submitted && destination.invalid" class="invalid-feedback">
+                    <div *ngIf="destination.errors.required">Please select a destination</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group ivys-input-style">
+                  <label>Type</label>
+                  <select class="form-control" [(ngModel)]="shippingData.boxType" name="boxType">
+                    <option *ngFor="let boxType of shippingBoxType" [value]="boxType.type">{{boxType.type}}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" *ngIf="shippingData.boxType === 'Container'">
+              <div class="col-md-6">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="containerUnit" [(ngModel)]="shippingDataContainer.units"
+                  #containerUnit="ngModel" [ngClass]="{ 'is-invalid': f.submitted && containerUnit.invalid }" required>
+                  <div class="input-group-append">
+                    <span class="input-group-text">Containers</span>
+                  </div>
+                  <div *ngIf="f.submitted && containerUnit.invalid" class="invalid-feedback">
+                    <div *ngIf="containerUnit.errors.required">Required Field</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group ivys-input-style">
+                  <label>Size</label>
+                  <select class="form-control" name="containerSize" [(ngModel)]="shippingDataContainer.size"
+                  #containerSize="ngModel" [ngClass]="{ 'is-invalid': f.submitted && containerSize.invalid }" required>
+                    <option value="20' Container size">20' Container size</option>
+                    <option value="40' Container size">40' Container size</option>
+                    <option value="40'HC Container size">40'HC Container size</option>
+                    <option value="45'HC Container size">45'HC Container size</option>
+                    <option value="All Sizes">All Sizes</option>
+                  </select>
+                  <div *ngIf="f.submitted && containerSize.invalid" class="invalid-feedback">
+                    <div *ngIf="containerSize.errors.required">Required Field</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row" *ngIf="shippingData.boxType === 'Boxes'">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="boxesData.units" name="boxUnits"
+                    #boxUnits="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxUnits.invalid }" required>
+                    <div class="input-group-append">
+                      <span class="input-group-text">Units</span>
+                    </div>
+                    <div *ngIf="f.submitted && boxUnits.invalid" class="invalid-feedback">
+                      <div *ngIf="boxUnits.errors.required">Required Field</div>
+                    </div>
+                  </div>
+                </div>                
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input type="text" class="form-control" [(ngModel)]="boxesData.volume" name="boxVolume"
+                    #boxUnits="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxUnits.invalid }" required>
+                    <div class="input-group-append">
+                      <select class="custom-select" [(ngModel)]="boxesData.volumeMessure" name="boxVolumeMessure">
+                        <option value="CBM">CBM</option>
+                        <option value="CBF">CBF</option>
+                      </select>
+                    </div>
+                    <div *ngIf="f.submitted && boxUnits.invalid" class="invalid-feedback">
+                      <div *ngIf="boxUnits.errors.required">Required Field</div>
+                    </div>
+                  </div>
+                </div>                
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">Total Weight</span>
+                    </div>
+                    <input type="text" class="form-control" [(ngModel)]="boxesData.weight" name="boxWeight"
+                    #boxWeight="ngModel" [ngClass]="{ 'is-invalid': f.submitted && boxWeight.invalid }" required>
+                    <div class="input-group-append">
+                      <select class="custom-select" [(ngModel)]="boxesData.wieghtMessure" name="boxWieghtMessure">
+                        <option value="Kg">Kg</option>
+                        <option value="Lb">Lb</option>
+                      </select>
+                    </div>
+                    <div *ngIf="f.submitted && boxWeight.invalid" class="invalid-feedback">
+                      <div *ngIf="boxWeight.errors.required">Required Field</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group ivys-input-style">
+                  <label>Seller Description</label>
+                  <textarea name="sellerMsg" class="form-control" rows="4" [(ngModel)]="shippingData.sellerMsg"
+                  #sellerMsg="ngModel" [ngClass]="{ 'is-invalid': f.submitted && sellerMsg.invalid }" required></textarea>
+                  <div *ngIf="f.submitted && sellerMsg.invalid" class="invalid-feedback">
+                    <div *ngIf="sellerMsg.errors.required">Required Field</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Confirm</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Dashboard</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+        
+        </div>
+      </div>
+
+      <div class="header-action-bar">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="filter-btns-holder">
+              <!-- <div class="filter-btn" (click)="filterQuoteList('all')" [ngClass]="{'selected': selectedFilter === 'all'}">
+                All
+              </div>
+              <div class="filter-btn" (click)="filterQuoteList('pending')" [ngClass]="{'selected': selectedFilter === 'pending'}">
+                Pending
+              </div>                       -->
+            </div>
+          </div>
+        </div>
+      </div>      
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="lsr-card-holder">
+      <div class="lsr-card" *ngFor="let quote of quoteList">
+        <div class="lsr-header">
+          <h4>Lowest Shipping Rate</h4>
+          <h5>
+            {{quote.quote_uuid}} 
+            <div class="go-to-quote" [routerLink]="['/buyer/manage-rfq', quote.quote_uuid]">
+              <i class="fas fa-arrow-circle-right"></i>
+            </div>
+          </h5>
+        </div>
+        <div class="lsr-body">
+          <div class="lsr-item" *ngFor="let bData of quote.bidData">
+            <div class="lsr-type-img">
+              <img src="assets/images/freight.svg" *ngIf="bData.freightType === 'sea'"/>
+              <img src="assets/images/airplane.svg" *ngIf="bData.freightType === 'air'"/>
+            </div>
+            <div class="lsr-content">
+              <h5>{{bData.freightTotal | currency}}</h5>
+              <h6>ETA: {{bData.freightEta | date: 'dd MMM yyyy'}}</h6>
+              <div class="approved-lbl" *ngIf="bData.status === 'Approved'">
+                <i class="fas fa-check-circle"></i> Confirmed
+              </div>
+              <div class="btn-group" role="group" aria-label="Basic example" *ngIf="bData.status === 'Pending'">
+                <button type="button" class="btn btn-light">More</button>
+                <button type="button" class="btn btn-primary" (click)="confirmLsr(bData)">Confirm</button>
+              </div>
+            </div>
+          </div>        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

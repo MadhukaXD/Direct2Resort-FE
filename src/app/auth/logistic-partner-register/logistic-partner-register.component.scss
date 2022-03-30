@@ -1,0 +1,49 @@
+@import 'src/assets/styles/variables';
+
+
+.login-container {
+    width: 100%;
+    min-height: calc(100vh - 78px);
+    background-color: $loginRegColorSectionBg;
+
+  .right-side {
+    padding: 20px 90px;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+
+    h3 {
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 400;
+        margin: 20px 0 20px 0;
+    }
+
+    .logo-holder {
+      width: 120px;
+
+      img {
+        width: 100%;
+      }
+    }
+
+    .seller-pre-reg {
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 5px;
+
+        h4 {
+            font-size: 18px;
+            margin: 10px 0 10px 0;
+        }
+    }
+
+    .wizard-inner {
+        padding: 20px 40px;
+
+        p {
+            margin: 0 0 40px 0;
+        }
+    }
+  }
+}

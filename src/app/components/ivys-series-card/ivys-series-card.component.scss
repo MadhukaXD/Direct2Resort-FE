@@ -1,0 +1,77 @@
+.product-card-outer {
+    box-shadow: 0 0 7.5px 0 rgba(34, 60, 71, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 15px 0;
+
+    .pco-img {
+        width: 100%;
+        height: 115px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: relative;
+        background-position: center center;
+        cursor: pointer;
+        transition: opacity 1s;
+
+        .card-actions {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            flex-direction: row;
+            position: absolute;
+            right: 5px;
+            top: 10px;
+
+            li {
+                background-color: #ffffff;
+                border-radius: 50%;
+                width: 34px;
+                height: 34px;
+                text-align: center;
+                margin: 0 5px;
+                padding: 4px 2px;
+                cursor: pointer;
+                
+                img {
+                    width: 20px;
+                    height: 20px;
+                }
+            }
+        }
+
+        .series-label {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            background-color: rgba(0,0,0,.6);
+            color: #ffffff;
+            padding: 3px 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-radius: 3px;
+        }
+    }
+
+    .pco-content {
+        width: 100%;
+        min-height: 82px;
+        padding: 20px;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        h3 {
+            font-size: 14px;
+            font-weight: normal;
+            margin: 0;
+            color: #3a5a68;
+        }
+
+        .arrow-btn {
+            cursor: pointer;
+        }
+    }
+}

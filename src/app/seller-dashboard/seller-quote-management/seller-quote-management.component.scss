@@ -332,3 +332,51 @@
         }
     }
 }
+
+@media only screen and (max-width: 767px) {
+    .page-holder {
+        .page-header {
+            height: auto !important;
+
+            .page-header-inner {
+                .header-action-bar {
+                    .header-quote-info-holder {
+                        flex-wrap: wrap;
+
+                        .quote-info-item {
+                            margin-bottom: 15px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .page-content {
+            padding: 10px !important;
+            height: auto !important;
+
+            .quote-managment-panel {
+                flex-direction: column !important;
+
+                .qma-section {
+                    height: auto !important;
+                    width: 100% !important;
+                    padding-right: 0 !important;
+                    padding-left: 0 !important;
+
+                    .qmas-msg-list-holder {
+                        .qmas-msg-item {
+                            &.client-msg {
+                                width: 100% !important;
+                            }
+                            &.my-msg {
+                                width: 100% !important;
+                                margin-left: 0 !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

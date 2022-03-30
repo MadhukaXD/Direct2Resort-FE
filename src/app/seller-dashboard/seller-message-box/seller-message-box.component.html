@@ -1,0 +1,80 @@
+<div class="page-holder" [ng2-loading]="isLoading">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>Messages</h2>
+        </div>
+
+        <div class="col-md-6 text-right">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="alert alert-secondary" role="alert" *ngIf="!msgList.length">
+      Message box is empty
+    </div>
+
+    <div class="quote-managment-panel" *ngIf="msgList.length">
+      <div class="qma-section">
+        <div class="qmas-header">
+          <h4>Messages</h4>
+        </div>
+
+        <div class="message-list-holder">
+          <div class="msg-item clearfix" *ngFor="let msg of msgList" (click)="getSignleMsg(msg)"
+            [ngClass]="{'unread': msg.readBySeller === false}">
+            <div class="product-img" [ngStyle]="getProductImg(msg.Product.product_imgs)">
+            </div>
+            <p>{{msg.Product.product_name}} <br> <small>Message ID: {{msg.uuid}}</small></p>
+            <div class="date-time">{{msg.updatedAt | date: 'M/d/yy hh:mm a'}}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="qma-section" *ngIf="msgTread">
+
+        <div class="qmas-body">
+          <div class="qmas-msg-list-holder" #scrollMsgFeed>
+
+            <div class="qmas-msg-item" *ngFor="let tMsg of msgTread"
+              [ngClass]="{'my-msg': tMsg.msgFrom === 'SELLER', 'client-msg': tMsg.msgFrom === 'BUYER'}">
+              <div class="qmas-msg-body">
+                <h6 class="msg-date-time">
+                  {{tMsg.createdAt | date: 'M/d/yy hh:mm a'}} by
+                  <span *ngIf="tMsg.msgFrom === 'BUYER'">Buyer</span>
+                  <span *ngIf="tMsg.msgFrom === 'SELLER'">Me</span>
+                </h6>
+                <p>{{tMsg.messageContent}}</p>
+                
+                <div *ngIf="tMsg.adminStatus ==='REJECTED'">
+                  <span class="badge badge-pill badge-danger mt-1">Admin Rejected</span>
+                  <div class="alert alert-danger mt-2" role="alert">
+                    <strong>Admin Reject Message: </strong> <br>
+                    {{tMsg.adminNote}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="qmas-footer">
+          <div class="form-group ivys-input-style">
+            <label>Message</label>
+            <textarea class="form-control" rows="2" [(ngModel)]="sellerMsg.quoteMessage" name="quoteMessage"></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <button type="button" class="quote-msg-send-btn" (click)="sendMsg(msgTread[0].ProductMsgUuid)">Send
+                Message</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

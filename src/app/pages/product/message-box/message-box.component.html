@@ -1,0 +1,29 @@
+<div class="modal-body-outer" [ng2-loading]="isLoading">
+  <div class="modal-header">
+    <h4 class="modal-title pull-left">Message Seller</h4>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="bsModalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  
+  <div class="modal-body">
+    <form name="form" (ngSubmit)="f.form.valid && sendMsg()" #f="ngForm" novalidate>
+      
+      <div class="form-group ivys-input-style">
+        <label>Message</label>
+        <textarea class="form-control" rows="3" #quoteMessage="ngModel" [(ngModel)]="msg.msgContent" name="quoteMessage"
+        [ngClass]="{ 'is-invalid': f.submitted && quoteMessage.invalid }" required></textarea>
+        <div *ngIf="f.submitted && quoteMessage.invalid" class="invalid-feedback">
+          <div *ngIf="quoteMessage.errors.required">Required field</div>
+        </div>
+      </div>
+      
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button type="submit" class="btn btn-primary">Send Message</button>
+        </div>
+      </div>      
+    </form>
+
+  </div>
+</div>

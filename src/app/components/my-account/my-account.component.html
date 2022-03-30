@@ -1,0 +1,93 @@
+<div class="page-holder">
+  <div class="page-header">
+    <div class="page-header-inner">
+      <div class="row">
+        <div class="col-md-6">
+          <h2>My Account</h2>
+        </div>
+    
+        <div class="col-md-6 text-right">
+        
+        </div>
+      </div>     
+    </div>    
+  </div>
+
+  <div class="page-content">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">User Information</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.name" disabled>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">Email Address</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.email" disabled>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Company Information</h5>
+          </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">Comapny Name</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.companyName" disabled>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">VAT/GST Number</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.vatGst" disabled>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">Telephone</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.telephone" disabled>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div>
+                <label class="form-label">Street</label>
+                <input type="text" class="form-control" [(ngModel)]="userInfo.street" disabled>
+              </div>
+            </li>
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-control" [(ngModel)]="userInfo.city" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">State/Province/Region</label>
+                  <input type="text" class="form-control" [(ngModel)]="userInfo.state" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Zip/Postal Code</label>
+                  <input type="text" class="form-control" [(ngModel)]="userInfo.zip" disabled>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Country</label>
+                  <input type="text" class="form-control" [(ngModel)]="userInfo.country" disabled>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

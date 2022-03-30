@@ -18,4 +18,21 @@ export class ProductService {
       })
     )
   }
+
+  getCountryList(countryCode: string) {
+    return this.http.get('assets/country_flags/country-list.js').pipe(
+      map((data: any) => {
+        const country = data.find(element => element.code === countryCode);        
+        return country.name;
+      })
+    )
+  }
+
+  requestSample(sampleReq: any) {
+    return this.http.post(`${environment.apiPath}/product/sendSampleReq`, sampleReq).pipe(
+      map((data:any) => {
+        return data;
+      })
+    )
+  }
 }
